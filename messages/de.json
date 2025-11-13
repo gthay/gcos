@@ -1,0 +1,10 @@
+{
+  "$schema": "https://inlang.com/schema/inlang-message-format",
+  "example_message": "Guten Tag {username}",
+  "nav_home": "Startseite",
+  "nav_about": "Über uns",
+  "nav_projects": "Projekte",
+  "nav_services": "Services",
+  "nav_getInvolved": "Mitmachen",
+  "nav_contact": "Kontakt"
+}

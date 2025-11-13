@@ -1,0 +1,14 @@
+[phases.setup]
+nixPkgs = ["nodejs_22", "pnpm-9_x"]
+
+[phases.install]
+cmds = [
+  "rm -rf node_modules",
+  "pnpm install --no-frozen-lockfile --force"
+]
+
+[phases.build]
+cmds = ["pnpm run build"]
+
+[start]
+cmd = "node .output/server/index.mjs"
