@@ -1,4 +1,3 @@
-import { Link, useLocation } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import {
 	DropdownMenu,
@@ -7,19 +6,10 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Globe } from 'lucide-react'
-import { getLocale, localizeHref, deLocalizeHref } from '@/paraglide/runtime.js'
+import { getLocale, setLocale, locales } from '@/paraglide/runtime.js'
 
 export function LanguageSwitcher() {
-	const locale = getLocale()
-	const location = useLocation()
-
-	// Get the pathname without locale prefix
-	const pathWithoutLocale = deLocalizeHref(location.pathname)
-
-	// Get localized path for a target locale
-	const getLocalizedPath = (targetLocale: 'en' | 'de') => {
-		return localizeHref(pathWithoutLocale, { locale: targetLocale })
-	}
+	const currentLocale = getLocale()
 
 	return (
 		<DropdownMenu>
@@ -30,16 +20,15 @@ export function LanguageSwitcher() {
 				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end">
-				<DropdownMenuItem asChild disabled={locale === 'en'}>
-					<Link to={getLocalizedPath('en')} className="w-full">
-						English
-					</Link>
-				</DropdownMenuItem>
-				<DropdownMenuItem asChild disabled={locale === 'de'}>
-					<Link to={getLocalizedPath('de')} className="w-full">
-						Deutsch
-					</Link>
-				</DropdownMenuItem>
+				{locales.map((locale) => (
+					<DropdownMenuItem
+						key={locale}
+						disabled={locale === currentLocale}
+						onClick={() => setLocale(locale)}
+					>
+						{locale === 'en' ? 'English' : 'Deutsch'}
+					</DropdownMenuItem>
+				))}
 			</DropdownMenuContent>
 		</DropdownMenu>
 	)

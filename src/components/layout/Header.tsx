@@ -27,44 +27,44 @@ export function Header() {
 				<nav className="hidden md:flex items-center space-x-6">
 					<Link
 						to="/"
-						className="text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
 					>
 						{m.nav_home()}
 					</Link>
 					<Link
 						to="/about"
-						className="text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
 					>
 						{m.nav_about()}
 					</Link>
 					<a
 						href="#"
-						className="text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
 					>
 						{m.nav_projects()}
 					</a>
 					<a
 						href="#"
-						className="text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
 					>
 						{m.nav_services()}
 					</a>
 					<a
 						href="#"
-						className="text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
 					>
 						{m['nav_getInvolved']()}
 					</a>
 					<Link
 						to="/contact"
-						className="text-sm font-medium transition-colors hover:text-foreground/80 text-foreground/60"
+						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
 					>
 						{m.nav_contact()}
 					</Link>
 				</nav>
 				<div className="flex items-center gap-4">
-					<Button size="sm" asChild>
-						<a href="#">Jetzt spenden</a>
+					<Button size="sm" className="text-base" asChild>
+						<a href="#">{m.cta_donate()}</a>
 					</Button>
 					<LanguageSwitcher />
 					<ThemeToggle />

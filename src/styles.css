@@ -4,11 +4,82 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ES Build Font Face Declarations */
+@font-face {
+  font-family: 'ES Build';
+  src: url('/fonts/ESBuildTRIAL-Regular.woff2') format('woff2'),
+       url('/fonts/ESBuildTRIAL-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ES Build';
+  src: url('/fonts/ESBuildTRIAL-Italic.woff2') format('woff2'),
+       url('/fonts/ESBuildTRIAL-Italic.otf') format('opentype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ES Build';
+  src: url('/fonts/ESBuildTRIAL-Medium.woff2') format('woff2'),
+       url('/fonts/ESBuildTRIAL-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ES Build';
+  src: url('/fonts/ESBuildTRIAL-MediumItalic.woff2') format('woff2'),
+       url('/fonts/ESBuildTRIAL-MediumItalic.otf') format('opentype');
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ES Build';
+  src: url('/fonts/ESBuildTRIAL-Semibold.woff2') format('woff2'),
+       url('/fonts/ESBuildTRIAL-Semibold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ES Build';
+  src: url('/fonts/ESBuildTRIAL-SemiboldItalic.woff2') format('woff2'),
+       url('/fonts/ESBuildTRIAL-SemiboldItalic.otf') format('opentype');
+  font-weight: 600;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ES Build';
+  src: url('/fonts/ESBuildTRIAL-Bold.woff2') format('woff2'),
+       url('/fonts/ESBuildTRIAL-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'ES Build';
+  src: url('/fonts/ESBuildTRIAL-BoldItalic.woff2') format('woff2'),
+       url('/fonts/ESBuildTRIAL-BoldItalic.otf') format('opentype');
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
 body {
   @apply m-0;
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -86,7 +157,7 @@ code {
   --sidebar-ring:
     oklch(0.7822 0.1473 175.1779);
   --font-sans:
-    "ES Build", sans-serif;
+    "ES Build", "Inter", sans-serif;
   --font-serif:
     Georgia, serif;
   --font-mono:
@@ -195,7 +266,7 @@ code {
   --radius:
     0.375rem;
   --font-sans:
-    "ES Build", sans-serif;
+    "ES Build", "Inter", sans-serif;
   --font-serif:
     Georgia, serif;
   --font-mono:
@@ -272,7 +343,7 @@ code {
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --font-sans:
-    "ES Build", sans-serif;
+    "ES Build", "Inter", sans-serif;
   --font-mono:
     "IBM Plex Mono", monospace;
   --font-serif:
@@ -333,5 +404,45 @@ code {
     @apply bg-background text-foreground;
     letter-spacing:
     var(--tracking-normal);
+  }
+}
+
+@layer utilities {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .container {
+      max-width: 640px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .container {
+      max-width: 768px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      max-width: 1024px;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .container {
+      max-width: 1280px;
+    }
+  }
+
+  @media (min-width: 1536px) {
+    .container {
+      max-width: 1536px;
+    }
   }
 }
