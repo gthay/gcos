@@ -12,8 +12,14 @@ export default defineNitroConfig({
 	// Don't bundle node_modules - keep them external to preserve package.json "imports"
 	// This is critical: by keeping packages external, their package.json "imports" field is preserved
 	noExternals: false,
-	// Ensure node_modules structure is preserved
+	// Ensure node_modules structure is preserved and copied correctly
 	nodeModulesDirs: ['node_modules'],
+	// Copy node_modules to output to preserve package.json structure
+	output: {
+		dir: '.output',
+		serverDir: '.output/server',
+		publicDir: '.output/public',
+	},
 	// Rollup configuration to mark TanStack packages as external
 	rollup: {
 		external: (id) => {
@@ -23,6 +29,15 @@ export default defineNitroConfig({
 			}
 			return false
 		},
+	},
+	// Experimental options to preserve package structure
+	experimental: {
+		wasm: false,
+	},
+	// Ensure all dependencies are treated as external
+	// This prevents bundling and preserves package.json "imports" field
+	imports: {
+		presets: [],
 	},
 })
 
