@@ -4,10 +4,10 @@ export default defineNitroConfig({
 	// Inline urlpattern-polyfill to ensure it's bundled with server code
 	externals: {
 		inline: ['urlpattern-polyfill'],
-		// Externalize TanStack Start packages to avoid package import resolution issues
-		// These packages use package.json "imports" field which doesn't work well when bundled
 	},
-	// Ensure TanStack packages are not bundled
+	// By default, Nitro externalizes all node_modules (noExternals: false)
+	// This ensures TanStack Start packages remain external and their package.json "imports" work
+	// The node_modules will be copied to .output/server/node_modules automatically
 	noExternals: false,
 })
 
