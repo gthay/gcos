@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { localizeHref } from "@/paraglide/runtime.js";
 import * as m from "@/paraglide/messages";
 
 export function Footer() {
@@ -89,9 +90,12 @@ export function Footer() {
 						<h4 className="text-sm font-semibold">{m.footer_legal()}</h4>
 						<ul className="space-y-2 text-sm text-muted-foreground">
 							<li>
-								<a href="#" className="hover:text-foreground transition-colors">
+								<Link
+									to={localizeHref("/imprint")}
+									className="hover:text-foreground transition-colors"
+								>
 									{m.footer_impressum()}
-								</a>
+								</Link>
 							</li>
 							<li>
 								<a href="#" className="hover:text-foreground transition-colors">

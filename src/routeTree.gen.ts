@@ -9,13 +9,20 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ImprintRouteImport } from './routes/imprint'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DeUeberRouteImport } from './routes/de/ueber'
 import { Route as DeKontaktRouteImport } from './routes/de/kontakt'
+import { Route as DeImpressumRouteImport } from './routes/de/impressum'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
+const ImprintRoute = ImprintRouteImport.update({
+  id: '/imprint',
+  path: '/imprint',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -41,6 +48,11 @@ const DeKontaktRoute = DeKontaktRouteImport.update({
   path: '/de/kontakt',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeImpressumRoute = DeImpressumRouteImport.update({
+  id: '/de/impressum',
+  path: '/de/impressum',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -51,6 +63,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/imprint': typeof ImprintRoute
+  '/de/impressum': typeof DeImpressumRoute
   '/de/kontakt': typeof DeKontaktRoute
   '/de/ueber': typeof DeUeberRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -59,6 +73,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/imprint': typeof ImprintRoute
+  '/de/impressum': typeof DeImpressumRoute
   '/de/kontakt': typeof DeKontaktRoute
   '/de/ueber': typeof DeUeberRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -68,6 +84,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/imprint': typeof ImprintRoute
+  '/de/impressum': typeof DeImpressumRoute
   '/de/kontakt': typeof DeKontaktRoute
   '/de/ueber': typeof DeUeberRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -78,16 +96,28 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/imprint'
+    | '/de/impressum'
     | '/de/kontakt'
     | '/de/ueber'
     | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/contact' | '/de/kontakt' | '/de/ueber' | '/api/auth/$'
+  to:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/imprint'
+    | '/de/impressum'
+    | '/de/kontakt'
+    | '/de/ueber'
+    | '/api/auth/$'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/contact'
+    | '/imprint'
+    | '/de/impressum'
     | '/de/kontakt'
     | '/de/ueber'
     | '/api/auth/$'
@@ -97,6 +127,8 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  ImprintRoute: typeof ImprintRoute
+  DeImpressumRoute: typeof DeImpressumRoute
   DeKontaktRoute: typeof DeKontaktRoute
   DeUeberRoute: typeof DeUeberRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
@@ -104,6 +136,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/imprint': {
+      id: '/imprint'
+      path: '/imprint'
+      fullPath: '/imprint'
+      preLoaderRoute: typeof ImprintRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -139,6 +178,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DeKontaktRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/de/impressum': {
+      id: '/de/impressum'
+      path: '/de/impressum'
+      fullPath: '/de/impressum'
+      preLoaderRoute: typeof DeImpressumRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -153,6 +199,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  ImprintRoute: ImprintRoute,
+  DeImpressumRoute: DeImpressumRoute,
   DeKontaktRoute: DeKontaktRoute,
   DeUeberRoute: DeUeberRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,

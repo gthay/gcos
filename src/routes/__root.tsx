@@ -8,6 +8,8 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 
 import Header from "../components/Header";
 import { Footer } from "../components/layout/Footer";
+import { ScrollToTop } from "../components/layout/ScrollToTop";
+import { PageTransition } from "../components/layout/PageTransition";
 
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 
@@ -76,8 +78,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<HeadContent />
 			</head>
 			<body>
+				<ScrollToTop />
 				<Header />
-				{children}
+				<PageTransition>{children}</PageTransition>
 				<Footer />
 				<TanStackDevtools
 					config={{

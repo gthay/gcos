@@ -40,6 +40,13 @@ const config = defineConfig({
           ],
         },
         {
+          pattern: '/imprint',
+          localized: [
+            ['en', '/imprint'],
+            ['de', '/de/impressum'],
+          ],
+        },
+        {
           pattern: '/:path(.*)?',
           localized: [
             ['en', '/:path(.*)?'],

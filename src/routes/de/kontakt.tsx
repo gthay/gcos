@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { PageHero } from "@/components/layout/PageHero";
+import { ProtectedEmail } from "@/components/ui/ProtectedEmail";
+import { ProtectedPhone } from "@/components/ui/ProtectedPhone";
 import * as m from "@/paraglide/messages";
 
 export const Route = createFileRoute("/de/kontakt")({
@@ -26,20 +28,18 @@ function ContactPage() {
 			<section className="container pb-12">
 				<div className="mx-auto max-w-2xl">
 					<div className="flex flex-col gap-6 sm:flex-row sm:justify-center">
-						<a
-							href="mailto:info@gcos.ai"
+						<ProtectedEmail
+							email="info@gcos.ai"
 							className="flex items-center gap-3 text-lg font-medium text-primary hover:underline"
 						>
 							<Mail className="h-5 w-5" />
-							info@gcos.ai
-						</a>
-						<a
-							href="tel:+491742634157"
+						</ProtectedEmail>
+						<ProtectedPhone
+							phone="+49 174 2634157"
 							className="flex items-center gap-3 text-lg font-medium text-primary hover:underline"
 						>
 							<Phone className="h-5 w-5" />
-							01742634157
-						</a>
+						</ProtectedPhone>
 					</div>
 				</div>
 			</section>
