@@ -10,7 +10,9 @@ import { nitro } from 'nitro/vite'
 const config = defineConfig({
   plugins: [
     devtools(),
-    // Paraglide plugin must come before tanstackStart
+    // Plugin order matching the TanStack Router example:
+    // tailwindcss first, then paraglide, then tanstackStart, then nitro, then react
+    tailwindcss(),
     paraglideVitePlugin({
       project: './project.inlang',
       outdir: './src/paraglide',
@@ -55,7 +57,6 @@ const config = defineConfig({
     tanstackStart(),
     nitro(),
     viteReact(),
-    tailwindcss(),
   ],
 })
 
