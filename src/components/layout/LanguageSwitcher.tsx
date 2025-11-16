@@ -6,10 +6,23 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Globe } from 'lucide-react'
-import { getLocale, setLocale, locales } from '@/paraglide/runtime.js'
+import { getLocale, setLocale, locales, localizeHref } from '@/paraglide/runtime.js'
 
 export function LanguageSwitcher() {
 	const currentLocale = getLocale()
+
+	const handleLocaleChange = (newLocale: string) => {
+		// Get the current pathname and localize it
+		const currentPath = window.location.pathname
+		const localizedPath = localizeHref(currentPath, { locale: newLocale as 'en' | 'de' })
+		
+		// Set the locale (updates cookie) without reloading
+		setLocale(newLocale as 'en' | 'de', { reload: false })
+		
+		// Navigate to the localized URL - this will trigger a page reload
+		// with the correct locale from the URL
+		window.location.href = localizedPath
+	}
 
 	return (
 		<DropdownMenu>
@@ -24,7 +37,7 @@ export function LanguageSwitcher() {
 					<DropdownMenuItem
 						key={locale}
 						disabled={locale === currentLocale}
-						onClick={() => setLocale(locale)}
+						onClick={() => handleLocaleChange(locale)}
 					>
 						{locale === 'en' ? 'English' : 'Deutsch'}
 					</DropdownMenuItem>

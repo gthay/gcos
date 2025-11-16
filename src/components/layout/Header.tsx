@@ -2,13 +2,14 @@ import { Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from './ThemeToggle'
 import { LanguageSwitcher } from './LanguageSwitcher'
+import { localizeHref } from '@/paraglide/runtime.js'
 import * as m from '@/paraglide/messages'
 
 export function Header() {
 	return (
 		<header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
 			<div className="container flex h-16 items-center justify-between">
-				<Link to="/" className="flex items-center space-x-2">
+				<Link to={localizeHref('/')} className="flex items-center space-x-2">
 					<img
 						src="/logos/GCOS-Header-Logo.svg"
 						alt="GC.OS Logo"
@@ -26,13 +27,13 @@ export function Header() {
 				</Link>
 				<nav className="hidden md:flex items-center space-x-6">
 					<Link
-						to="/"
+						to={localizeHref('/')}
 						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
 					>
 						{m.nav_home()}
 					</Link>
 					<Link
-						to="/about"
+						to={localizeHref('/about')}
 						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
 					>
 						{m.nav_about()}
@@ -56,7 +57,7 @@ export function Header() {
 						{m['nav_getInvolved']()}
 					</a>
 					<Link
-						to="/contact"
+						to={localizeHref('/contact')}
 						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
 					>
 						{m.nav_contact()}

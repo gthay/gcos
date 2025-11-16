@@ -26,6 +26,20 @@ const config = defineConfig({
           ],
         },
         {
+          pattern: '/about',
+          localized: [
+            ['en', '/about'],
+            ['de', '/de/ueber'],
+          ],
+        },
+        {
+          pattern: '/contact',
+          localized: [
+            ['en', '/contact'],
+            ['de', '/de/kontakt'],
+          ],
+        },
+        {
           pattern: '/:path(.*)?',
           localized: [
             ['en', '/:path(.*)?'],

@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DeUeberRouteImport } from './routes/de/ueber'
+import { Route as DeKontaktRouteImport } from './routes/de/kontakt'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const ContactRoute = ContactRouteImport.update({
@@ -29,6 +31,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeUeberRoute = DeUeberRouteImport.update({
+  id: '/de/ueber',
+  path: '/de/ueber',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeKontaktRoute = DeKontaktRouteImport.update({
+  id: '/de/kontakt',
+  path: '/de/kontakt',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -39,12 +51,16 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/de/kontakt': typeof DeKontaktRoute
+  '/de/ueber': typeof DeUeberRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/de/kontakt': typeof DeKontaktRoute
+  '/de/ueber': typeof DeUeberRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
@@ -52,20 +68,37 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/de/kontakt': typeof DeKontaktRoute
+  '/de/ueber': typeof DeUeberRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/contact' | '/api/auth/$'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/de/kontakt'
+    | '/de/ueber'
+    | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/contact' | '/api/auth/$'
-  id: '__root__' | '/' | '/about' | '/contact' | '/api/auth/$'
+  to: '/' | '/about' | '/contact' | '/de/kontakt' | '/de/ueber' | '/api/auth/$'
+  id:
+    | '__root__'
+    | '/'
+    | '/about'
+    | '/contact'
+    | '/de/kontakt'
+    | '/de/ueber'
+    | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  DeKontaktRoute: typeof DeKontaktRoute
+  DeUeberRoute: typeof DeUeberRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -92,6 +125,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/de/ueber': {
+      id: '/de/ueber'
+      path: '/de/ueber'
+      fullPath: '/de/ueber'
+      preLoaderRoute: typeof DeUeberRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/de/kontakt': {
+      id: '/de/kontakt'
+      path: '/de/kontakt'
+      fullPath: '/de/kontakt'
+      preLoaderRoute: typeof DeKontaktRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -106,6 +153,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  DeKontaktRoute: DeKontaktRoute,
+  DeUeberRoute: DeUeberRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport
