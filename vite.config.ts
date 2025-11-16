@@ -4,13 +4,12 @@ import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 import tailwindcss from '@tailwindcss/vite'
-import { nitro } from 'nitro/vite'
+import { nitroV2Plugin } from '@tanstack/nitro-v2-vite-plugin'
 import { paraglideVitePlugin } from '@inlang/paraglide-js'
 
 const config = defineConfig({
   plugins: [
     devtools(),
-    nitro(),
     // Paraglide plugin must come before tanstackStart
     paraglideVitePlugin({
       project: './project.inlang',
@@ -40,6 +39,7 @@ const config = defineConfig({
       projects: ['./tsconfig.json'],
     }),
     tanstackStart(),
+    nitroV2Plugin(),
     viteReact(),
     tailwindcss(),
   ],
