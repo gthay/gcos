@@ -1,5 +1,6 @@
 // Polyfill URLPattern for Node.js environments that don't have it
-import 'urlpattern-polyfill'
+// Must be imported first before any other imports that might use URLPattern
+import './src/lib/polyfills.js'
 
 import { paraglideMiddleware } from './src/paraglide/server.js'
 import handler from '@tanstack/react-start/server-entry'
