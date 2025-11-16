@@ -5,7 +5,7 @@ import viteReact from '@vitejs/plugin-react'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 import tailwindcss from '@tailwindcss/vite'
 import { paraglideVitePlugin } from '@inlang/paraglide-js'
-import { nitroV2Plugin } from '@tanstack/nitro-v2-vite-plugin'
+import { nitro } from 'nitro/vite'
 
 const config = defineConfig({
   plugins: [
@@ -53,7 +53,7 @@ const config = defineConfig({
       projects: ['./tsconfig.json'],
     }),
     tanstackStart(),
-    ...nitroV2Plugin(),
+    nitro(),
     viteReact(),
     tailwindcss(),
   ],
