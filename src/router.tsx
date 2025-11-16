@@ -1,3 +1,13 @@
+// CRITICAL: Load URLPattern polyfill BEFORE any Paraglide imports
+// This ensures URLPattern is available when deLocalizeUrl/localizeUrl are called
+import { URLPattern } from 'urlpattern-polyfill'
+if (typeof globalThis !== 'undefined' && !globalThis.URLPattern) {
+	globalThis.URLPattern = URLPattern
+}
+if (typeof global !== 'undefined' && !global.URLPattern) {
+	global.URLPattern = URLPattern
+}
+
 import { createRouter } from '@tanstack/react-router'
 import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query'
 import * as TanstackQuery from './integrations/tanstack-query/root-provider'
