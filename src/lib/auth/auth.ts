@@ -1,6 +1,6 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
-import { reactStartCookies } from "better-auth/react-start";
+import { tanstackStartCookies } from "better-auth/tanstack-start";
 import { getDb } from "@/lib/db";
 
 // Initialize database connection and get Db instance
@@ -32,7 +32,7 @@ export async function getAuth() {
 			emailAndPassword: {
 				enabled: true,
 			},
-			plugins: [reactStartCookies()], // Must be last in plugins array
+			plugins: [tanstackStartCookies()], // Must be last in plugins array
 		});
 	}
 	return authInstance;
