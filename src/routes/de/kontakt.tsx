@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Mail, MapPin, Phone, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { PageHero } from "@/components/layout/PageHero";
 import { ProtectedEmail } from "@/components/ui/ProtectedEmail";
 import { ProtectedPhone } from "@/components/ui/ProtectedPhone";
+import { localizeHref } from "@/paraglide/runtime.js";
 import * as m from "@/paraglide/messages";
 
 export const Route = createFileRoute("/de/kontakt")({
@@ -95,9 +96,12 @@ function ContactPage() {
 								className="text-sm font-normal leading-relaxed"
 							>
 								{m.contact_form_privacy_text()}{" "}
-								<a href="#" className="text-primary hover:underline">
+								<Link
+									to={localizeHref("/privacy-policy")}
+									className="text-primary hover:underline"
+								>
 									{m.contact_form_privacy_link()}
-								</a>
+								</Link>
 							</Label>
 						</div>
 

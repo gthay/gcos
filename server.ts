@@ -1,23 +1,40 @@
-// CRITICAL: Polyfill URLPattern for Node.js environments
-// Must be imported FIRST before any other imports that might use URLPattern
-// This ensures URLPattern is available globally before Paraglide middleware executes
-import { URLPattern } from 'urlpattern-polyfill'
+// CRITICAL: Import polyfills FIRST before any other imports
+// This ensures URLPattern is available globally for Paraglide's URL pattern matching
+import './src/lib/polyfills'
 
-// Explicitly assign to global scope to ensure it's available
-if (typeof globalThis !== 'undefined' && !globalThis.URLPattern) {
-	globalThis.URLPattern = URLPattern
-}
-// Also assign to global for Node.js environments
-if (typeof global !== 'undefined' && !global.URLPattern) {
-	global.URLPattern = URLPattern
-}
-
-import { paraglideMiddleware } from './src/paraglide/server.js'
+import { 
+  extractLocaleFromUrl, 
+  deLocalizeUrl, 
+  overwriteGetLocale,
+  overwriteGetUrlOrigin,
+  type Locale
+} from './src/paraglide/runtime.js'
 import handler from '@tanstack/react-start/server-entry'
 
 export default {
-  fetch(req: Request): Promise<Response> {
-    return paraglideMiddleware(req, ({ request }) => handler.fetch(request))
+  async fetch(req: Request): Promise<Response> {
+    const url = new URL(req.url)
+    
+    // Extract locale from URL (before de-localization)
+    const locale = extractLocaleFromUrl(req.url) as Locale
+    
+    // Override getLocale for this request
+    overwriteGetLocale(() => locale)
+    overwriteGetUrlOrigin(() => url.origin)
+    
+    // De-localize the URL for internal routing
+    // /de/impressum -> /imprint
+    const deLocalizedUrl = deLocalizeUrl(req.url)
+    
+    const deLocalizedRequest = new Request(deLocalizedUrl, {
+      method: req.method,
+      headers: req.headers,
+      body: req.body,
+      // @ts-ignore - duplex is needed for streaming bodies
+      duplex: req.body ? 'half' : undefined,
+    })
+    
+    return handler.fetch(deLocalizedRequest)
   },
 }
 

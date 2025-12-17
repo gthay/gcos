@@ -1,11 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState, useMemo, useRef, useCallback } from "react";
 import { DashboardLayout } from "@/components/admin/DashboardLayout";
-import { getFiles, deleteFile, uploadFile, type S3File } from "@/lib/server/files";
+import { getFiles, deleteFile, uploadFile, updateMediaNoindex, type S3File, type MediaUsage } from "@/lib/server/media";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import {
 	Table,
 	TableBody,
@@ -58,11 +59,12 @@ import {
 	Upload,
 	X,
 	Loader2,
+	EyeOff,
 } from "lucide-react";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/admin/files")({
-	component: FilesPage,
+export const Route = createFileRoute("/admin/media")({
+	component: MediaPage,
 });
 
 type SortField = "name" | "size" | "lastModified" | "type";
@@ -85,7 +87,7 @@ function formatDate(dateString: string): string {
 		day: "numeric",
 		hour: "2-digit",
 		minute: "2-digit",
-	});
+	})
 }
 
 function getFileIcon(type: string) {
@@ -124,7 +126,37 @@ function getFileTypeFromMime(mimeType: string): string {
 	return "other";
 }
 
-function FilesPage() {
+function getUsageEditUrl(usage: MediaUsage): string {
+	switch (usage.type) {
+		case "project":
+			return `/admin/projects/${usage.id}`;
+		case "teamMember":
+			return `/admin/team-members/${usage.id}`;
+		case "course":
+			return `/admin/courses/${usage.id}`;
+		case "blogPost":
+			return `/admin/blog-posts/${usage.id}`;
+		default:
+			return "#";
+	}
+}
+
+function getUsageTypeLabel(type: MediaUsage["type"]): string {
+	switch (type) {
+		case "project":
+			return "Project";
+		case "teamMember":
+			return "Team";
+		case "course":
+			return "Course";
+		case "blogPost":
+			return "Blog";
+		default:
+			return type;
+	}
+}
+
+function MediaPage() {
 	const queryClient = useQueryClient();
 	const [search, setSearch] = useState("");
 	const [typeFilter, setTypeFilter] = useState<string>("all");
@@ -132,19 +164,20 @@ function FilesPage() {
 	const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 	const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 	const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-	const [uploadFolder, setUploadFolder] = useState("");
 	const [isDragging, setIsDragging] = useState(false);
+	const [isPageDragging, setIsPageDragging] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const dragCounter = useRef(0);
 
 	const { data: files = [], isLoading, isError, error, refetch } = useQuery({
-		queryKey: ["files"],
+		queryKey: ["media"],
 		queryFn: () => getFiles(),
-	});
+	})
 
 	const deleteMutation = useMutation({
 		mutationFn: (key: string) => deleteFile({ data: key }),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["files"] });
+			queryClient.invalidateQueries({ queryKey: ["media"] });
 			toast.success("File deleted");
 		},
 		onError: (error) => {
@@ -170,12 +203,29 @@ function FilesPage() {
 					fileName: file.name,
 					fileData: base64,
 					contentType: file.type || "application/octet-stream",
-					folder: uploadFolder || undefined,
 				},
 			});
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["files"] });
+			queryClient.invalidateQueries({ queryKey: ["media"] });
+		},
+	});
+
+	const noindexMutation = useMutation({
+		mutationFn: ({ s3Key, noindex }: { s3Key: string; noindex: boolean }) =>
+			updateMediaNoindex({ data: { s3Key, noindex } }),
+		onSuccess: (_, variables) => {
+			queryClient.invalidateQueries({ queryKey: ["media"] });
+			toast.success(
+				variables.noindex
+					? "File hidden from search engines"
+					: "File visible to search engines"
+			);
+		},
+		onError: (error) => {
+			toast.error("Failed to update noindex setting", {
+				description: error instanceof Error ? error.message : "An error occurred",
+			});
 		},
 	});
 
@@ -184,7 +234,7 @@ function FilesPage() {
 
 		const results = await Promise.allSettled(
 			selectedFiles.map((file) => uploadMutation.mutateAsync(file))
-		);
+		)
 
 		const succeeded = results.filter((r) => r.status === "fulfilled").length;
 		const failed = results.filter((r) => r.status === "rejected").length;
@@ -197,18 +247,17 @@ function FilesPage() {
 		}
 
 		setSelectedFiles([]);
-		setUploadFolder("");
 		setUploadDialogOpen(false);
-	};
+	}
 
 	const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const files = Array.from(e.target.files || []);
 		setSelectedFiles((prev) => [...prev, ...files]);
-	};
+	}
 
 	const handleRemoveFile = (index: number) => {
 		setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
-	};
+	}
 
 	const handleDragOver = useCallback((e: React.DragEvent) => {
 		e.preventDefault();
@@ -227,10 +276,76 @@ function FilesPage() {
 		setSelectedFiles((prev) => [...prev, ...files]);
 	}, []);
 
+	// Page-level drag handlers for dropping files anywhere on the page
+	const handlePageDragEnter = useCallback((e: React.DragEvent) => {
+		e.preventDefault();
+		dragCounter.current++;
+		if (e.dataTransfer.types.includes("Files")) {
+			setIsPageDragging(true);
+		}
+	}, []);
+
+	const handlePageDragLeave = useCallback((e: React.DragEvent) => {
+		e.preventDefault();
+		dragCounter.current--;
+		if (dragCounter.current === 0) {
+			setIsPageDragging(false);
+		}
+	}, []);
+
+	const handlePageDragOver = useCallback((e: React.DragEvent) => {
+		e.preventDefault();
+	}, []);
+
+	const handlePageDrop = useCallback(
+		async (e: React.DragEvent) => {
+			e.preventDefault();
+			dragCounter.current = 0;
+			setIsPageDragging(false);
+
+			const droppedFiles = Array.from(e.dataTransfer.files);
+			if (droppedFiles.length === 0) return;
+
+			// Upload files directly
+			const results = await Promise.allSettled(
+				droppedFiles.map(async (file) => {
+					const buffer = await file.arrayBuffer();
+					const base64 = btoa(
+						new Uint8Array(buffer).reduce(
+							(data, byte) => data + String.fromCharCode(byte),
+							""
+						)
+					);
+					return uploadFile({
+						data: {
+							fileName: file.name,
+							fileData: base64,
+							contentType: file.type || "application/octet-stream",
+						},
+					});
+				})
+			);
+
+			const succeeded = results.filter((r) => r.status === "fulfilled").length;
+			const failed = results.filter((r) => r.status === "rejected").length;
+
+			if (succeeded > 0) {
+				queryClient.invalidateQueries({ queryKey: ["media"] });
+				toast.success(
+					`${succeeded} file${succeeded > 1 ? "s" : ""} uploaded successfully`
+				);
+			}
+			if (failed > 0) {
+				toast.error(`${failed} file${failed > 1 ? "s" : ""} failed to upload`);
+			}
+		},
+		[queryClient]
+	);
+
 	const handleCopyUrl = (url: string) => {
 		navigator.clipboard.writeText(url);
 		toast.success("URL copied to clipboard");
-	};
+	}
 
 	const handleSort = (field: SortField) => {
 		if (sortField === field) {
@@ -239,7 +354,7 @@ function FilesPage() {
 			setSortField(field);
 			setSortDirection("asc");
 		}
-	};
+	}
 
 	const getSortIcon = (field: SortField) => {
 		if (sortField !== field) {
@@ -249,8 +364,8 @@ function FilesPage() {
 			<ArrowUp className="h-4 w-4 ml-1" />
 		) : (
 			<ArrowDown className="h-4 w-4 ml-1" />
-		);
-	};
+		)
+	}
 
 	const filteredAndSortedFiles = useMemo(() => {
 		let result = [...files];
@@ -260,7 +375,7 @@ function FilesPage() {
 			const searchLower = search.toLowerCase();
 			result = result.filter((file) =>
 				file.name.toLowerCase().includes(searchLower)
-			);
+			)
 		}
 
 		// Filter by type
@@ -274,19 +389,19 @@ function FilesPage() {
 			switch (sortField) {
 				case "name":
 					comparison = a.name.localeCompare(b.name);
-					break;
+					break
 				case "size":
 					comparison = a.size - b.size;
-					break;
+					break
 				case "lastModified":
 					comparison = new Date(a.lastModified).getTime() - new Date(b.lastModified).getTime();
-					break;
+					break
 				case "type":
 					comparison = a.type.localeCompare(b.type);
-					break;
+					break
 			}
 			return sortDirection === "asc" ? comparison : -comparison;
-		});
+		})
 
 		return result;
 	}, [files, search, typeFilter, sortField, sortDirection]);
@@ -308,7 +423,7 @@ function FilesPage() {
 					<span className="ml-2 text-muted-foreground">Loading files...</span>
 				</div>
 			</DashboardLayout>
-		);
+		)
 	}
 
 	if (isError) {
@@ -316,8 +431,8 @@ function FilesPage() {
 			<DashboardLayout>
 				<div className="space-y-6">
 					<div>
-						<h1 className="text-3xl font-bold">Files</h1>
-						<p className="text-muted-foreground">Manage your S3 storage files</p>
+						<h1 className="text-3xl font-bold">Media</h1>
+						<p className="text-muted-foreground">Manage your media files</p>
 					</div>
 					<div className="rounded-lg border border-destructive/50 bg-destructive/10 p-6 text-center">
 						<p className="text-destructive font-medium">Failed to load files</p>
@@ -331,15 +446,33 @@ function FilesPage() {
 					</div>
 				</div>
 			</DashboardLayout>
-		);
+		)
 	}
 
 	return (
 		<DashboardLayout>
-			<div className="space-y-6">
+			<div
+				className="space-y-6 relative"
+				onDragEnter={handlePageDragEnter}
+				onDragLeave={handlePageDragLeave}
+				onDragOver={handlePageDragOver}
+				onDrop={handlePageDrop}
+			>
+				{/* Full-page drop overlay */}
+				{isPageDragging && (
+					<div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+						<div className="flex flex-col items-center gap-4 rounded-lg border-2 border-dashed border-primary bg-primary/5 p-12">
+							<Upload className="h-16 w-16 text-primary" />
+							<p className="text-xl font-medium text-primary">
+								Drop files to upload
+							</p>
+						</div>
+					</div>
+				)}
+
 				<div className="flex items-center justify-between">
 					<div>
-						<h1 className="text-3xl font-bold">Files</h1>
+						<h1 className="text-3xl font-bold">Media</h1>
 						<p className="text-muted-foreground">
 							{files.length} files • {formatFileSize(totalSize)} total
 						</p>
@@ -349,31 +482,17 @@ function FilesPage() {
 							<DialogTrigger asChild>
 								<Button>
 									<Upload className="h-4 w-4 mr-2" />
-									Upload Files
+									Upload Media
 								</Button>
 							</DialogTrigger>
 							<DialogContent className="sm:max-w-lg">
 								<DialogHeader>
-									<DialogTitle>Upload Files</DialogTitle>
+									<DialogTitle>Upload Media</DialogTitle>
 									<DialogDescription>
-										Select files to upload to your S3 storage.
+										Select files to upload to your media storage.
 									</DialogDescription>
 								</DialogHeader>
 								<div className="space-y-4">
-									{/* Folder input */}
-									<div className="space-y-2">
-										<Label htmlFor="folder">Folder (optional)</Label>
-										<Input
-											id="folder"
-											placeholder="e.g., images/courses"
-											value={uploadFolder}
-											onChange={(e) => setUploadFolder(e.target.value)}
-										/>
-										<p className="text-xs text-muted-foreground">
-											Leave empty to upload to root directory
-										</p>
-									</div>
-
 									{/* Drop zone */}
 									<div
 										className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
@@ -412,7 +531,7 @@ function FilesPage() {
 											<div className="max-h-48 overflow-y-auto space-y-2">
 												{selectedFiles.map((file, index) => (
 													<div
-														key={`${file.name}-${index}`}
+														key={"${file.name}-${index}"}
 														className="flex items-center justify-between gap-2 rounded-md border p-2 text-sm"
 													>
 														<div className="flex items-center gap-2 min-w-0">
@@ -533,6 +652,13 @@ function FilesPage() {
 											{getSortIcon("lastModified")}
 										</button>
 									</TableHead>
+									<TableHead>Used In</TableHead>
+									<TableHead className="w-[100px]">
+										<div className="flex items-center gap-1" title="Hide from search engines">
+											<EyeOff className="h-4 w-4" />
+											noindex
+										</div>
+									</TableHead>
 									<TableHead className="text-right">Actions</TableHead>
 								</TableRow>
 							</TableHeader>
@@ -548,7 +674,7 @@ function FilesPage() {
 														alt={file.name}
 														className="h-8 w-8 rounded object-cover border"
 														onError={(e) => {
-															e.currentTarget.style.display = "none";
+															e.currentTarget.style.display = "none"
 														}}
 													/>
 												)}
@@ -562,6 +688,43 @@ function FilesPage() {
 										</TableCell>
 										<TableCell className="text-muted-foreground">
 											{formatDate(file.lastModified)}
+										</TableCell>
+										<TableCell>
+											{file.usedBy.length === 0 ? (
+												<span className="text-xs text-muted-foreground italic">Not used</span>
+											) : (
+												<div className="flex flex-col gap-1">
+													{file.usedBy.slice(0, 3).map((usage, idx) => (
+														<Link
+															key={`${usage.type}-${usage.id}-${idx}`}
+															to={getUsageEditUrl(usage)}
+															className="text-xs text-primary hover:underline truncate max-w-[150px]"
+															title={`${getUsageTypeLabel(usage.type)}: ${usage.name}`}
+														>
+															{getUsageTypeLabel(usage.type)}: {usage.name}
+														</Link>
+													))}
+													{file.usedBy.length > 3 && (
+														<span className="text-xs text-muted-foreground">
+															+{file.usedBy.length - 3} more
+														</span>
+													)}
+												</div>
+											)}
+										</TableCell>
+										<TableCell>
+											<div className="flex items-center gap-2">
+												<Switch
+													checked={file.noindex}
+													onCheckedChange={(checked) =>
+														noindexMutation.mutate({
+															s3Key: file.key,
+															noindex: checked,
+														})
+													}
+													disabled={noindexMutation.isPending}
+												/>
+											</div>
 										</TableCell>
 										<TableCell>
 											<div className="flex justify-end gap-1">
@@ -583,30 +746,41 @@ function FilesPage() {
 														<ExternalLink className="h-4 w-4" />
 													</a>
 												</Button>
-												<AlertDialog>
-													<AlertDialogTrigger asChild>
-														<Button variant="ghost" size="icon" title="Delete">
-															<Trash2 className="h-4 w-4 text-destructive" />
-														</Button>
-													</AlertDialogTrigger>
-													<AlertDialogContent>
-														<AlertDialogHeader>
-															<AlertDialogTitle>Delete File</AlertDialogTitle>
-															<AlertDialogDescription>
-																Are you sure you want to delete "{file.name}"? This action cannot be undone.
-															</AlertDialogDescription>
-														</AlertDialogHeader>
-														<AlertDialogFooter>
-															<AlertDialogCancel>Cancel</AlertDialogCancel>
-															<AlertDialogAction
-																onClick={() => deleteMutation.mutate(file.key)}
-																className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-															>
-																Delete
-															</AlertDialogAction>
-														</AlertDialogFooter>
-													</AlertDialogContent>
-												</AlertDialog>
+												{file.usedBy.length > 0 ? (
+													<Button
+														variant="ghost"
+														size="icon"
+														disabled
+														title={`Cannot delete: Used by ${file.usedBy.length} item(s)`}
+													>
+														<Trash2 className="h-4 w-4 text-muted-foreground" />
+													</Button>
+												) : (
+													<AlertDialog>
+														<AlertDialogTrigger asChild>
+															<Button variant="ghost" size="icon" title="Delete">
+																<Trash2 className="h-4 w-4 text-destructive" />
+															</Button>
+														</AlertDialogTrigger>
+														<AlertDialogContent>
+															<AlertDialogHeader>
+																<AlertDialogTitle>Delete File</AlertDialogTitle>
+																<AlertDialogDescription>
+																	Are you sure you want to delete "{file.name}"? This action cannot be undone.
+																</AlertDialogDescription>
+															</AlertDialogHeader>
+															<AlertDialogFooter>
+																<AlertDialogCancel>Cancel</AlertDialogCancel>
+																<AlertDialogAction
+																	onClick={() => deleteMutation.mutate(file.key)}
+																	className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+																>
+																	Delete
+																</AlertDialogAction>
+															</AlertDialogFooter>
+														</AlertDialogContent>
+													</AlertDialog>
+												)}
 											</div>
 										</TableCell>
 									</TableRow>
@@ -617,7 +791,7 @@ function FilesPage() {
 				)}
 			</div>
 		</DashboardLayout>
-	);
+	)
 }
 
 

@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { DashboardLayout } from "@/components/admin/DashboardLayout";
-import { getTeamMembers, deleteTeamMember } from "@/lib/server/team-members";
+import { getBlogPosts, deleteBlogPost } from "@/lib/server/blog-posts";
 import { Button } from "@/components/ui/button";
 import {
 	Table,
@@ -25,42 +25,42 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export const Route = createFileRoute("/admin/team-members")({
-	component: TeamMembersPage,
+export const Route = createFileRoute("/admin/blog-posts/")({
+	component: BlogPostsPage,
 });
 
-function TeamMembersPage() {
+function BlogPostsPage() {
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
 
-	const { data: members = [], isLoading } = useQuery({
-		queryKey: ["teamMembers"],
-		queryFn: () => getTeamMembers(),
-	});
+	const { data: posts = [], isLoading } = useQuery({
+		queryKey: ["blogPosts"],
+		queryFn: () => getBlogPosts(),
+	})
 
 	const deleteMutation = useMutation({
-		mutationFn: (id: string) => deleteTeamMember({ data: id }),
+		mutationFn: (id: string) => deleteBlogPost({ data: id }),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["teamMembers"] });
-			toast.success("Team member deleted");
+			queryClient.invalidateQueries({ queryKey: ["blogPosts"] });
+			toast.success("Blog post deleted");
 		},
 		onError: (error) => {
-			toast.error("Failed to delete team member", {
+			toast.error("Failed to delete blog post", {
 				description: error instanceof Error ? error.message : "An error occurred",
-			});
+			})
 		},
-	});
+	})
 
 	const handleDelete = (id: string) => {
 		deleteMutation.mutate(id);
-	};
+	}
 
 	if (isLoading) {
 		return (
 			<DashboardLayout>
 				<div>Loading...</div>
 			</DashboardLayout>
-		);
+		)
 	}
 
 	return (
@@ -68,21 +68,21 @@ function TeamMembersPage() {
 			<div className="space-y-6">
 				<div className="flex items-center justify-between">
 					<div>
-						<h1 className="text-3xl font-bold">Team Members</h1>
-						<p className="text-muted-foreground">Manage your team members</p>
+						<h1 className="text-3xl font-bold">Blog Posts</h1>
+						<p className="text-muted-foreground">Manage your blog posts</p>
 					</div>
-					<Button onClick={() => navigate({ to: "/admin/team-members/new" })}>
+					<Button onClick={() => navigate({ to: "/admin/blog-posts/new" })}>
 						<Plus className="mr-2 h-4 w-4" />
-						New Member
+						New Post
 					</Button>
 				</div>
 
-				{members.length === 0 ? (
+				{posts.length === 0 ? (
 					<div className="text-center py-12">
-						<p className="text-muted-foreground mb-4">No team members yet.</p>
-						<Button onClick={() => navigate({ to: "/admin/team-members/new" })}>
+						<p className="text-muted-foreground mb-4">No blog posts yet.</p>
+						<Button onClick={() => navigate({ to: "/admin/blog-posts/new" })}>
 							<Plus className="mr-2 h-4 w-4" />
-							Add your first member
+							Create your first post
 						</Button>
 					</div>
 				) : (
@@ -90,36 +90,22 @@ function TeamMembersPage() {
 						<Table>
 							<TableHeader>
 								<TableRow>
-									<TableHead>Picture</TableHead>
-									<TableHead>Name</TableHead>
-									<TableHead>Position</TableHead>
-									<TableHead>Project</TableHead>
+									<TableHead>Title</TableHead>
+									<TableHead>Category</TableHead>
+									<TableHead>Author</TableHead>
 									<TableHead>Created</TableHead>
 									<TableHead className="text-right">Actions</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>
-								{members.map((member) => (
-									<TableRow key={member._id}>
+								{posts.map((post) => (
+									<TableRow key={post._id}>
+										<TableCell className="font-medium">{post.h1}</TableCell>
+										<TableCell>{post.category}</TableCell>
+										<TableCell>{post.author}</TableCell>
 										<TableCell>
-											{member.picture ? (
-												<img
-													src={member.picture}
-													alt={member.name}
-													className="h-10 w-10 rounded-full object-cover"
-												/>
-											) : (
-												<div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-													<span className="text-xs text-muted-foreground">No image</span>
-												</div>
-											)}
-										</TableCell>
-										<TableCell className="font-medium">{member.name}</TableCell>
-										<TableCell>{member.position}</TableCell>
-										<TableCell>{member.project}</TableCell>
-										<TableCell>
-											{member.createdAt
-												? new Date(member.createdAt).toLocaleDateString()
+											{post.createdAt
+												? new Date(post.createdAt).toLocaleDateString()
 												: "—"}
 										</TableCell>
 										<TableCell className="text-right">
@@ -127,7 +113,7 @@ function TeamMembersPage() {
 												<Button
 													variant="ghost"
 													size="icon"
-													onClick={() => navigate({ to: `/admin/team-members/${member._id}` })}
+													onClick={() => navigate({ to: `/admin/blog-posts/${post._id}` })}
 												>
 													<Pencil className="h-4 w-4" />
 												</Button>
@@ -139,15 +125,15 @@ function TeamMembersPage() {
 													</AlertDialogTrigger>
 													<AlertDialogContent>
 														<AlertDialogHeader>
-															<AlertDialogTitle>Delete Team Member</AlertDialogTitle>
+															<AlertDialogTitle>Delete Blog Post</AlertDialogTitle>
 															<AlertDialogDescription>
-																Are you sure you want to delete "{member.name}"? This action cannot be undone.
+																Are you sure you want to delete "{post.h1}"? This action cannot be undone.
 															</AlertDialogDescription>
 														</AlertDialogHeader>
 														<AlertDialogFooter>
 															<AlertDialogCancel>Cancel</AlertDialogCancel>
 															<AlertDialogAction
-																onClick={() => handleDelete(member._id!)}
+																onClick={() => handleDelete(post._id!)}
 																className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
 															>
 																Delete
@@ -165,7 +151,6 @@ function TeamMembersPage() {
 				)}
 			</div>
 		</DashboardLayout>
-	);
+	)
 }
-
 

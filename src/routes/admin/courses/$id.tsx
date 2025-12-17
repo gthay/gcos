@@ -37,14 +37,15 @@ function CourseEditorPage() {
 		queryKey: ["course", id],
 		queryFn: () => getCourse({ data: id }),
 		enabled: !isNew,
+		refetchOnWindowFocus: false,
 	});
 
 	const createMutation = useMutation({
 		mutationFn: (data: unknown) => createCourse({ data }),
-		onSuccess: (newId) => {
+		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["courses"] });
 			toast.success("Course created");
-			navigate({ to: `/admin/courses/${newId}` });
+			navigate({ to: "/admin/courses" });
 		},
 		onError: (error) => {
 			toast.error("Failed to create course", {

@@ -1,15 +1,41 @@
-import { Link } from '@tanstack/react-router'
-import { Button } from '@/components/ui/button'
-import { ThemeToggle } from './ThemeToggle'
-import { LanguageSwitcher } from './LanguageSwitcher'
-import { localizeHref } from '@/paraglide/runtime.js'
-import * as m from '@/paraglide/messages'
+import { Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "./ThemeToggle";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import type { Locale } from "@/lib/i18n/locale";
 
-export function Header() {
+// Translations for navigation
+const translations = {
+	en: {
+		home: "Home",
+		about: "About",
+		courses: "Courses",
+		projects: "Projects",
+		services: "Services",
+		getInvolved: "Get Involved",
+		contact: "Contact",
+		donate: "Donate",
+	},
+	de: {
+		home: "Startseite",
+		about: "Über uns",
+		courses: "Kurse",
+		projects: "Projekte",
+		services: "Leistungen",
+		getInvolved: "Mitmachen",
+		contact: "Kontakt",
+		donate: "Spenden",
+	},
+};
+
+export function Header({ locale }: { locale: Locale }) {
+	const nav = translations[locale];
+
 	return (
 		<header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
 			<div className="container flex h-16 items-center justify-between">
-				<Link to={localizeHref('/')} className="flex items-center space-x-2">
+				{/* Router automatically localizes URLs via rewrite.output */}
+				<Link to="/" className="flex items-center space-x-2">
 					<img
 						src="/logos/GCOS-Header-Logo.svg"
 						alt="GC.OS Logo"
@@ -27,57 +53,57 @@ export function Header() {
 				</Link>
 				<nav className="hidden md:flex items-center space-x-6">
 					<Link
-						to={localizeHref('/')}
+						to="/"
 						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
 					>
-						{m.nav_home()}
+						{nav.home}
 					</Link>
 					<Link
-						to={localizeHref('/about')}
+						to="/about"
 						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
 					>
-						{m.nav_about()}
+						{nav.about}
 					</Link>
 					<Link
-						to={localizeHref('/courses')}
+						to="/courses"
 						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
 					>
-						{m.nav_courses()}
+						{nav.courses}
+					</Link>
+					<Link
+						to="/projects"
+						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
+					>
+						{nav.projects}
 					</Link>
 					<a
 						href="#"
 						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
 					>
-						{m.nav_projects()}
+						{nav.services}
 					</a>
 					<a
 						href="#"
 						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
 					>
-						{m.nav_services()}
-					</a>
-					<a
-						href="#"
-						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
-					>
-						{m.nav_getInvolved()}
+						{nav.getInvolved}
 					</a>
 					<Link
-						to={localizeHref('/contact')}
+						to="/contact"
 						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
 					>
-						{m.nav_contact()}
+						{nav.contact}
 					</Link>
 				</nav>
 				<div className="flex items-center gap-4">
 					<Button size="sm" className="text-base" asChild>
-						<a href="#">{m.cta_donate()}</a>
+						<a href="#">{nav.donate}</a>
 					</Button>
-					<LanguageSwitcher />
+					<LanguageSwitcher locale={locale} />
 					<ThemeToggle />
 				</div>
 			</div>
 		</header>
-	)
+	);
 }
 

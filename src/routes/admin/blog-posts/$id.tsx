@@ -25,14 +25,15 @@ function BlogPostEditorPage() {
 		queryKey: ["blogPost", id],
 		queryFn: () => getBlogPost({ data: id }),
 		enabled: !isNew,
+		refetchOnWindowFocus: false,
 	});
 
 	const createMutation = useMutation({
 		mutationFn: (data: unknown) => createBlogPost({ data }),
-		onSuccess: (newId) => {
+		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["blogPosts"] });
 			toast.success("Blog post created");
-			navigate({ to: `/admin/blog-posts/${newId}` });
+			navigate({ to: "/admin/blog-posts" });
 		},
 		onError: (error) => {
 			toast.error("Failed to create blog post", {
@@ -67,7 +68,7 @@ function BlogPostEditorPage() {
 			thumbnail: "",
 		},
 		validators: {
-			onChange: blogPostCreateSchema,
+			onSubmit: blogPostCreateSchema,
 		},
 		onSubmit: async ({ value }) => {
 			if (isNew) {

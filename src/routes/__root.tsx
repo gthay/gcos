@@ -1,5 +1,6 @@
 import {
 	HeadContent,
+	Outlet,
 	Scripts,
 	createRootRouteWithContext,
 	Link,
@@ -7,23 +8,33 @@ import {
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { TanStackDevtools } from "@tanstack/react-devtools";
+import { createServerFn } from "@tanstack/react-start";
+import { getCookie } from "@tanstack/react-start/server";
 
-import Header from "../components/Header";
+import { Header } from "../components/layout/Header";
 import { Footer } from "../components/layout/Footer";
 import { ScrollToTop } from "../components/layout/ScrollToTop";
 import { PageTransition } from "../components/layout/PageTransition";
 import { Button } from "@/components/ui/button";
+import { LocaleProvider } from "@/lib/locale-context";
+import type { Locale } from "@/lib/i18n/locale";
 
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 
 import appCss from "../styles.css?url";
 
 import type { QueryClient } from "@tanstack/react-query";
-import { getLocale } from "../paraglide/runtime.js";
 
 interface MyRouterContext {
 	queryClient: QueryClient;
 }
+
+// Server function to get locale from Paraglide cookie
+const getLocaleFromCookie = createServerFn({ method: "GET" }).handler(async () => {
+	const cookieLocale = getCookie("PARAGLIDE_LOCALE");
+	const locale: Locale = cookieLocale === "de" ? "de" : "en";
+	return { locale };
+});
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
 	head: () => ({
@@ -36,7 +47,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: "TanStack Start Starter",
+				title: "GC.OS - German Center of Open Source AI",
 			},
 		],
 		links: [
@@ -70,28 +81,36 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 			},
 		],
 	}),
+	// Get locale from Paraglide cookie
+	loader: () => getLocaleFromCookie(),
+	component: RootComponent,
 	notFoundComponent: NotFoundFallback,
-	shellComponent: RootDocument,
 });
 
-function RootDocument({ children }: { children: React.ReactNode }) {
+function RootComponent() {
+	const { locale } = Route.useLoaderData();
 	const { location } = useRouterState();
+	// Admin routes don't have locale prefixes, so pathname is consistent
 	const isAdminRoute = location.pathname.startsWith("/admin");
 
 	return (
-		<html lang={getLocale()}>
+		<html lang={locale} suppressHydrationWarning>
 			<head>
 				<HeadContent />
 			</head>
-			<body>
-				<ScrollToTop />
-				{!isAdminRoute && <Header />}
-				{isAdminRoute ? (
-					children
-				) : (
-					<PageTransition>{children}</PageTransition>
-				)}
-				{!isAdminRoute && <Footer />}
+			<body suppressHydrationWarning>
+				<LocaleProvider locale={locale}>
+					<ScrollToTop />
+					{!isAdminRoute && <Header locale={locale} />}
+					{isAdminRoute ? (
+						<Outlet />
+					) : (
+						<PageTransition>
+							<Outlet />
+						</PageTransition>
+					)}
+					{!isAdminRoute && <Footer locale={locale} />}
+				</LocaleProvider>
 				<TanStackDevtools
 					config={{
 						position: "bottom-right",
@@ -111,22 +130,42 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 }
 
 function NotFoundFallback() {
+	const { locale } = Route.useLoaderData();
+	const t =
+		locale === "de"
+			? {
+					title: "Seite nicht gefunden",
+					description:
+						"Die angeforderte Seite existiert nicht oder wurde verschoben. Bitte prüfe die URL oder nutze die folgenden Links, um weiterzumachen.",
+					home: "Zur Startseite",
+					contact: "Kontakt aufnehmen",
+				}
+			: {
+					title: "Page not found",
+					description:
+						"The requested page does not exist or has been moved. Please check the URL or use the following links to continue.",
+					home: "Go to Home",
+					contact: "Contact us",
+				};
+
 	return (
 		<div className="flex flex-col items-center gap-4 py-24 text-center">
 			<div>
 				<p className="text-sm uppercase tracking-widest text-primary">404</p>
-				<h1 className="text-3xl font-bold">Seite nicht gefunden</h1>
+				<h1 className="text-3xl font-bold">{t.title}</h1>
 			</div>
 			<p className="max-w-xl text-balance text-muted-foreground">
-				Die angeforderte Seite existiert nicht oder wurde verschoben. Bitte prüfe
-				die URL oder nutze die folgenden Links, um weiterzumachen.
+				{t.description}
 			</p>
 			<div className="flex flex-wrap items-center justify-center gap-3">
 				<Button asChild>
-					<Link to="/">Zur Startseite</Link>
+					<Link to="/">{t.home}</Link>
 				</Button>
-				<Link to="/contact" className="text-sm font-medium text-primary underline">
-					Kontakt aufnehmen
+				<Link
+					to="/contact"
+					className="text-sm font-medium text-primary underline"
+				>
+					{t.contact}
 				</Link>
 			</div>
 		</div>

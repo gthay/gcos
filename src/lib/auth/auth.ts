@@ -1,7 +1,9 @@
 import { betterAuth } from "better-auth";
 import { mongodbAdapter } from "better-auth/adapters/mongodb";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
+import { admin as adminPlugin } from "better-auth/plugins";
 import { getDb } from "@/lib/db";
+import { ac, admin, user } from "./permissions";
 
 // Initialize database connection and get Db instance
 let dbInstance: Awaited<ReturnType<typeof getDb>> | null = null;
@@ -20,27 +22,58 @@ export async function getAuth() {
 	if (!authInstance) {
 		// Lazy import env to avoid validation at module load time
 		const { env } = await import("@/env");
-		
+
 		// Initialize database before creating auth instance
 		const db = await initDb();
-		
-		// Build trusted origins list - always include baseURL
-		const baseOrigin = new URL(env.BETTER_AUTH_URL).origin;
-		const trustedOrigins = [
-			baseOrigin,
-			...env.BETTER_AUTH_TRUSTED_ORIGINS.filter(origin => origin !== baseOrigin),
-		];
 
 		// Create auth instance
 		authInstance = betterAuth({
 			database: mongodbAdapter(db),
 			baseURL: env.BETTER_AUTH_URL,
 			secret: env.BETTER_AUTH_SECRET,
-			trustedOrigins,
 			emailAndPassword: {
 				enabled: true,
+				// Disable public registration - admins create accounts via CMS
+				disableSignUp: true,
 			},
-			plugins: [tanstackStartCookies()], // Must be last in plugins array
+			// Rate limiting to prevent brute-force attacks
+			rateLimit: {
+				enabled: true,
+				window: 60, // 60 seconds window
+				max: 10, // Max 10 requests per window for general endpoints
+				customRules: {
+					// Stricter limits for login attempts
+					"/sign-in/email": {
+						window: 60, // 1 minute
+						max: 5, // Only 5 login attempts per minute
+					},
+					"/sign-up/email": {
+						window: 60,
+						max: 3, // Only 3 sign-up attempts per minute
+					},
+					"/forget-password": {
+						window: 300, // 5 minutes
+						max: 3, // Only 3 password reset requests per 5 minutes
+					},
+					// Exclude admin endpoints from rate limiting - they're already protected by authentication
+					"/admin/*": false, // All admin endpoints are excluded
+				},
+				storage: "database", // Persist rate limit data in database
+			},
+			plugins: [
+				// Admin plugin for user management and roles
+				adminPlugin({
+					ac,
+					roles: {
+						admin,
+						user,
+					},
+					// Default role for new users created by admins
+					defaultRole: "user",
+				}),
+				// TanStack Start cookies must be last in plugins array
+				tanstackStartCookies(),
+			],
 		});
 	}
 	return authInstance;

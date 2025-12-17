@@ -1,7 +1,7 @@
-import { createFileRoute, useNavigate, Outlet, useRouterState } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { DashboardLayout } from "@/components/admin/DashboardLayout";
-import { getCourses, deleteCourse } from "@/lib/server/courses";
+import { getProjects, deleteProject } from "@/lib/server/projects";
 import { Button } from "@/components/ui/button";
 import {
 	Table,
@@ -11,7 +11,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import {
 	AlertDialog,
@@ -25,40 +25,27 @@ import {
 	AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
-export const Route = createFileRoute("/admin/courses")({
-	component: CoursesLayout,
+export const Route = createFileRoute("/admin/projects/")({
+	component: ProjectsPage,
 });
 
-function CoursesLayout() {
-	const router = useRouterState();
-	const currentPath = router.location.pathname;
-	
-	// If we're exactly on /admin/courses, show the list
-	// Otherwise, render the child route via Outlet
-	if (currentPath === "/admin/courses") {
-		return <CoursesPage />;
-	}
-	
-	return <Outlet />;
-}
-
-function CoursesPage() {
+function ProjectsPage() {
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
 
-	const { data: courses = [], isLoading } = useQuery({
-		queryKey: ["courses"],
-		queryFn: () => getCourses(),
+	const { data: projects = [], isLoading } = useQuery({
+		queryKey: ["projects"],
+		queryFn: () => getProjects(),
 	});
 
 	const deleteMutation = useMutation({
-		mutationFn: (id: string) => deleteCourse({ data: id }),
+		mutationFn: (id: string) => deleteProject({ data: id }),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["courses"] });
-			toast.success("Course deleted");
+			queryClient.invalidateQueries({ queryKey: ["projects"] });
+			toast.success("Project deleted");
 		},
 		onError: (error) => {
-			toast.error("Failed to delete course", {
+			toast.error("Failed to delete project", {
 				description: error instanceof Error ? error.message : "An error occurred",
 			});
 		},
@@ -81,21 +68,21 @@ function CoursesPage() {
 			<div className="space-y-6">
 				<div className="flex items-center justify-between">
 					<div>
-						<h1 className="text-3xl font-bold">Courses</h1>
-						<p className="text-muted-foreground">Manage your courses</p>
+						<h1 className="text-3xl font-bold">Projects</h1>
+						<p className="text-muted-foreground">Manage your open source projects</p>
 					</div>
-					<Button onClick={() => navigate({ to: "/admin/courses/new" })}>
+					<Button onClick={() => navigate({ to: "/admin/projects/new" })}>
 						<Plus className="mr-2 h-4 w-4" />
-						New Course
+						New Project
 					</Button>
 				</div>
 
-				{courses.length === 0 ? (
+				{projects.length === 0 ? (
 					<div className="text-center py-12">
-						<p className="text-muted-foreground mb-4">No courses yet.</p>
-						<Button onClick={() => navigate({ to: "/admin/courses/new" })}>
+						<p className="text-muted-foreground mb-4">No projects yet.</p>
+						<Button onClick={() => navigate({ to: "/admin/projects/new" })}>
 							<Plus className="mr-2 h-4 w-4" />
-							Create your first course
+							Create your first project
 						</Button>
 					</div>
 				) : (
@@ -103,24 +90,42 @@ function CoursesPage() {
 						<Table>
 							<TableHeader>
 								<TableRow>
-									<TableHead>Title</TableHead>
-									<TableHead>Date & Time</TableHead>
-									<TableHead>Location</TableHead>
-									<TableHead>Hosts</TableHead>
+									<TableHead>Name</TableHead>
+									<TableHead>Slug</TableHead>
+									<TableHead>Short Description</TableHead>
+									<TableHead>Links</TableHead>
 									<TableHead>Created</TableHead>
 									<TableHead className="text-right">Actions</TableHead>
 								</TableRow>
 							</TableHeader>
 							<TableBody>
-								{courses.map((course) => (
-									<TableRow key={course._id}>
-										<TableCell className="font-medium">{course.h1}</TableCell>
-										<TableCell>{course.dateTime}</TableCell>
-										<TableCell>{course.location}</TableCell>
-										<TableCell>{course.hosts?.length || 0} host(s)</TableCell>
+								{projects.map((project) => (
+									<TableRow key={project._id}>
+										<TableCell className="font-medium">{project.name}</TableCell>
+										<TableCell className="font-mono text-sm text-muted-foreground">
+											/{project.slug}
+										</TableCell>
+										<TableCell className="max-w-[200px] truncate">
+											{project.shortDescription}
+										</TableCell>
 										<TableCell>
-											{course.createdAt
-												? new Date(course.createdAt).toLocaleDateString()
+											<div className="flex gap-1">
+												{project.githubUrl && (
+													<a
+														href={project.githubUrl}
+														target="_blank"
+														rel="noopener noreferrer"
+														className="text-muted-foreground hover:text-foreground"
+														title="GitHub"
+													>
+														<ExternalLink className="h-4 w-4" />
+													</a>
+												)}
+											</div>
+										</TableCell>
+										<TableCell>
+											{project.createdAt
+												? new Date(project.createdAt).toLocaleDateString()
 												: "—"}
 										</TableCell>
 										<TableCell className="text-right">
@@ -128,7 +133,7 @@ function CoursesPage() {
 												<Button
 													variant="ghost"
 													size="icon"
-													onClick={() => navigate({ to: `/admin/courses/${course._id}` })}
+													onClick={() => navigate({ to: `/admin/projects/${project._id}` })}
 												>
 													<Pencil className="h-4 w-4" />
 												</Button>
@@ -140,15 +145,16 @@ function CoursesPage() {
 													</AlertDialogTrigger>
 													<AlertDialogContent>
 														<AlertDialogHeader>
-															<AlertDialogTitle>Delete Course</AlertDialogTitle>
+															<AlertDialogTitle>Delete Project</AlertDialogTitle>
 															<AlertDialogDescription>
-																Are you sure you want to delete "{course.h1}"? This action cannot be undone.
+																Are you sure you want to delete "{project.name}"? This action
+																cannot be undone.
 															</AlertDialogDescription>
 														</AlertDialogHeader>
 														<AlertDialogFooter>
 															<AlertDialogCancel>Cancel</AlertDialogCancel>
 															<AlertDialogAction
-																onClick={() => handleDelete(course._id!)}
+																onClick={() => handleDelete(project._id!)}
 																className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
 															>
 																Delete
@@ -168,4 +174,3 @@ function CoursesPage() {
 		</DashboardLayout>
 	);
 }
-

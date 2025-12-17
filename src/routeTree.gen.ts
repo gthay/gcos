@@ -9,28 +9,42 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as ImprintRouteImport } from './routes/imprint'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
+import { Route as ProjectsSlugRouteImport } from './routes/projects/$slug'
 import { Route as DeUeberRouteImport } from './routes/de/ueber'
 import { Route as DeKurseRouteImport } from './routes/de/kurse'
 import { Route as DeKontaktRouteImport } from './routes/de/kontakt'
-import { Route as DeImpressumRouteImport } from './routes/de/impressum'
-import { Route as AdminTeamMembersRouteImport } from './routes/admin/team-members'
+import { Route as AdminUsersRouteImport } from './routes/admin/users'
 import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as AdminMediaRouteImport } from './routes/admin/media'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
-import { Route as AdminFilesRouteImport } from './routes/admin/files'
-import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
-import { Route as AdminCoursesRouteImport } from './routes/admin/courses'
-import { Route as AdminBlogPostsRouteImport } from './routes/admin/blog-posts'
+import { Route as DeProjekteIndexRouteImport } from './routes/de/projekte/index'
+import { Route as AdminTeamMembersIndexRouteImport } from './routes/admin/team-members/index'
+import { Route as AdminProjectsIndexRouteImport } from './routes/admin/projects/index'
+import { Route as AdminPagesIndexRouteImport } from './routes/admin/pages/index'
+import { Route as AdminCoursesIndexRouteImport } from './routes/admin/courses/index'
+import { Route as AdminBlogPostsIndexRouteImport } from './routes/admin/blog-posts/index'
+import { Route as DeProjekteSlugRouteImport } from './routes/de/projekte/$slug'
+import { Route as ApiMediaSplatRouteImport } from './routes/api/media/$'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AdminTeamMembersIdRouteImport } from './routes/admin/team-members/$id'
+import { Route as AdminProjectsIdRouteImport } from './routes/admin/projects/$id'
+import { Route as AdminPagesSlugRouteImport } from './routes/admin/pages/$slug'
 import { Route as AdminCoursesIdRouteImport } from './routes/admin/courses/$id'
 import { Route as AdminBlogPostsIdRouteImport } from './routes/admin/blog-posts/$id'
 
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImprintRoute = ImprintRouteImport.update({
   id: '/imprint',
   path: '/imprint',
@@ -56,9 +70,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProjectsIndexRoute = ProjectsIndexRouteImport.update({
+  id: '/projects/',
+  path: '/projects/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
+  id: '/projects/$slug',
+  path: '/projects/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DeUeberRoute = DeUeberRouteImport.update({
@@ -76,14 +100,9 @@ const DeKontaktRoute = DeKontaktRouteImport.update({
   path: '/de/kontakt',
   getParentRoute: () => rootRouteImport,
 } as any)
-const DeImpressumRoute = DeImpressumRouteImport.update({
-  id: '/de/impressum',
-  path: '/de/impressum',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminTeamMembersRoute = AdminTeamMembersRouteImport.update({
-  id: '/admin/team-members',
-  path: '/admin/team-members',
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/admin/users',
+  path: '/admin/users',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
@@ -91,29 +110,54 @@ const AdminSettingsRoute = AdminSettingsRouteImport.update({
   path: '/admin/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminMediaRoute = AdminMediaRouteImport.update({
+  id: '/admin/media',
+  path: '/admin/media',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminFilesRoute = AdminFilesRouteImport.update({
-  id: '/admin/files',
-  path: '/admin/files',
+const DeProjekteIndexRoute = DeProjekteIndexRouteImport.update({
+  id: '/de/projekte/',
+  path: '/de/projekte/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminDashboardRoute = AdminDashboardRouteImport.update({
-  id: '/admin/dashboard',
-  path: '/admin/dashboard',
+const AdminTeamMembersIndexRoute = AdminTeamMembersIndexRouteImport.update({
+  id: '/admin/team-members/',
+  path: '/admin/team-members/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminCoursesRoute = AdminCoursesRouteImport.update({
-  id: '/admin/courses',
-  path: '/admin/courses',
+const AdminProjectsIndexRoute = AdminProjectsIndexRouteImport.update({
+  id: '/admin/projects/',
+  path: '/admin/projects/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminBlogPostsRoute = AdminBlogPostsRouteImport.update({
-  id: '/admin/blog-posts',
-  path: '/admin/blog-posts',
+const AdminPagesIndexRoute = AdminPagesIndexRouteImport.update({
+  id: '/admin/pages/',
+  path: '/admin/pages/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminCoursesIndexRoute = AdminCoursesIndexRouteImport.update({
+  id: '/admin/courses/',
+  path: '/admin/courses/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminBlogPostsIndexRoute = AdminBlogPostsIndexRouteImport.update({
+  id: '/admin/blog-posts/',
+  path: '/admin/blog-posts/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeProjekteSlugRoute = DeProjekteSlugRouteImport.update({
+  id: '/de/projekte/$slug',
+  path: '/de/projekte/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiMediaSplatRoute = ApiMediaSplatRouteImport.update({
+  id: '/api/media/$',
+  path: '/api/media/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -122,19 +166,29 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminTeamMembersIdRoute = AdminTeamMembersIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminTeamMembersRoute,
+  id: '/admin/team-members/$id',
+  path: '/admin/team-members/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminProjectsIdRoute = AdminProjectsIdRouteImport.update({
+  id: '/admin/projects/$id',
+  path: '/admin/projects/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminPagesSlugRoute = AdminPagesSlugRouteImport.update({
+  id: '/admin/pages/$slug',
+  path: '/admin/pages/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminCoursesIdRoute = AdminCoursesIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminCoursesRoute,
+  id: '/admin/courses/$id',
+  path: '/admin/courses/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminBlogPostsIdRoute = AdminBlogPostsIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => AdminBlogPostsRoute,
+  id: '/admin/blog-posts/$id',
+  path: '/admin/blog-posts/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -143,22 +197,31 @@ export interface FileRoutesByFullPath {
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
   '/imprint': typeof ImprintRoute
-  '/admin/blog-posts': typeof AdminBlogPostsRouteWithChildren
-  '/admin/courses': typeof AdminCoursesRouteWithChildren
-  '/admin/dashboard': typeof AdminDashboardRoute
-  '/admin/files': typeof AdminFilesRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/media': typeof AdminMediaRoute
   '/admin/settings': typeof AdminSettingsRoute
-  '/admin/team-members': typeof AdminTeamMembersRouteWithChildren
-  '/de/impressum': typeof DeImpressumRoute
+  '/admin/users': typeof AdminUsersRoute
   '/de/kontakt': typeof DeKontaktRoute
   '/de/kurse': typeof DeKurseRoute
   '/de/ueber': typeof DeUeberRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/admin': typeof AdminIndexRoute
+  '/projects': typeof ProjectsIndexRoute
   '/admin/blog-posts/$id': typeof AdminBlogPostsIdRoute
   '/admin/courses/$id': typeof AdminCoursesIdRoute
+  '/admin/pages/$slug': typeof AdminPagesSlugRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/team-members/$id': typeof AdminTeamMembersIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/media/$': typeof ApiMediaSplatRoute
+  '/de/projekte/$slug': typeof DeProjekteSlugRoute
+  '/admin/blog-posts': typeof AdminBlogPostsIndexRoute
+  '/admin/courses': typeof AdminCoursesIndexRoute
+  '/admin/pages': typeof AdminPagesIndexRoute
+  '/admin/projects': typeof AdminProjectsIndexRoute
+  '/admin/team-members': typeof AdminTeamMembersIndexRoute
+  '/de/projekte': typeof DeProjekteIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -166,22 +229,31 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
   '/imprint': typeof ImprintRoute
-  '/admin/blog-posts': typeof AdminBlogPostsRouteWithChildren
-  '/admin/courses': typeof AdminCoursesRouteWithChildren
-  '/admin/dashboard': typeof AdminDashboardRoute
-  '/admin/files': typeof AdminFilesRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/media': typeof AdminMediaRoute
   '/admin/settings': typeof AdminSettingsRoute
-  '/admin/team-members': typeof AdminTeamMembersRouteWithChildren
-  '/de/impressum': typeof DeImpressumRoute
+  '/admin/users': typeof AdminUsersRoute
   '/de/kontakt': typeof DeKontaktRoute
   '/de/kurse': typeof DeKurseRoute
   '/de/ueber': typeof DeUeberRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/admin': typeof AdminIndexRoute
+  '/projects': typeof ProjectsIndexRoute
   '/admin/blog-posts/$id': typeof AdminBlogPostsIdRoute
   '/admin/courses/$id': typeof AdminCoursesIdRoute
+  '/admin/pages/$slug': typeof AdminPagesSlugRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/team-members/$id': typeof AdminTeamMembersIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/media/$': typeof ApiMediaSplatRoute
+  '/de/projekte/$slug': typeof DeProjekteSlugRoute
+  '/admin/blog-posts': typeof AdminBlogPostsIndexRoute
+  '/admin/courses': typeof AdminCoursesIndexRoute
+  '/admin/pages': typeof AdminPagesIndexRoute
+  '/admin/projects': typeof AdminProjectsIndexRoute
+  '/admin/team-members': typeof AdminTeamMembersIndexRoute
+  '/de/projekte': typeof DeProjekteIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -190,22 +262,31 @@ export interface FileRoutesById {
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
   '/imprint': typeof ImprintRoute
-  '/admin/blog-posts': typeof AdminBlogPostsRouteWithChildren
-  '/admin/courses': typeof AdminCoursesRouteWithChildren
-  '/admin/dashboard': typeof AdminDashboardRoute
-  '/admin/files': typeof AdminFilesRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/media': typeof AdminMediaRoute
   '/admin/settings': typeof AdminSettingsRoute
-  '/admin/team-members': typeof AdminTeamMembersRouteWithChildren
-  '/de/impressum': typeof DeImpressumRoute
+  '/admin/users': typeof AdminUsersRoute
   '/de/kontakt': typeof DeKontaktRoute
   '/de/kurse': typeof DeKurseRoute
   '/de/ueber': typeof DeUeberRoute
+  '/projects/$slug': typeof ProjectsSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/projects/': typeof ProjectsIndexRoute
   '/admin/blog-posts/$id': typeof AdminBlogPostsIdRoute
   '/admin/courses/$id': typeof AdminCoursesIdRoute
+  '/admin/pages/$slug': typeof AdminPagesSlugRoute
+  '/admin/projects/$id': typeof AdminProjectsIdRoute
   '/admin/team-members/$id': typeof AdminTeamMembersIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/media/$': typeof ApiMediaSplatRoute
+  '/de/projekte/$slug': typeof DeProjekteSlugRoute
+  '/admin/blog-posts/': typeof AdminBlogPostsIndexRoute
+  '/admin/courses/': typeof AdminCoursesIndexRoute
+  '/admin/pages/': typeof AdminPagesIndexRoute
+  '/admin/projects/': typeof AdminProjectsIndexRoute
+  '/admin/team-members/': typeof AdminTeamMembersIndexRoute
+  '/de/projekte/': typeof DeProjekteIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -215,22 +296,31 @@ export interface FileRouteTypes {
     | '/contact'
     | '/courses'
     | '/imprint'
-    | '/admin/blog-posts'
-    | '/admin/courses'
-    | '/admin/dashboard'
-    | '/admin/files'
+    | '/privacy-policy'
     | '/admin/login'
+    | '/admin/media'
     | '/admin/settings'
-    | '/admin/team-members'
-    | '/de/impressum'
+    | '/admin/users'
     | '/de/kontakt'
     | '/de/kurse'
     | '/de/ueber'
+    | '/projects/$slug'
     | '/admin'
+    | '/projects'
     | '/admin/blog-posts/$id'
     | '/admin/courses/$id'
+    | '/admin/pages/$slug'
+    | '/admin/projects/$id'
     | '/admin/team-members/$id'
     | '/api/auth/$'
+    | '/api/media/$'
+    | '/de/projekte/$slug'
+    | '/admin/blog-posts'
+    | '/admin/courses'
+    | '/admin/pages'
+    | '/admin/projects'
+    | '/admin/team-members'
+    | '/de/projekte'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -238,22 +328,31 @@ export interface FileRouteTypes {
     | '/contact'
     | '/courses'
     | '/imprint'
-    | '/admin/blog-posts'
-    | '/admin/courses'
-    | '/admin/dashboard'
-    | '/admin/files'
+    | '/privacy-policy'
     | '/admin/login'
+    | '/admin/media'
     | '/admin/settings'
-    | '/admin/team-members'
-    | '/de/impressum'
+    | '/admin/users'
     | '/de/kontakt'
     | '/de/kurse'
     | '/de/ueber'
+    | '/projects/$slug'
     | '/admin'
+    | '/projects'
     | '/admin/blog-posts/$id'
     | '/admin/courses/$id'
+    | '/admin/pages/$slug'
+    | '/admin/projects/$id'
     | '/admin/team-members/$id'
     | '/api/auth/$'
+    | '/api/media/$'
+    | '/de/projekte/$slug'
+    | '/admin/blog-posts'
+    | '/admin/courses'
+    | '/admin/pages'
+    | '/admin/projects'
+    | '/admin/team-members'
+    | '/de/projekte'
   id:
     | '__root__'
     | '/'
@@ -261,22 +360,31 @@ export interface FileRouteTypes {
     | '/contact'
     | '/courses'
     | '/imprint'
-    | '/admin/blog-posts'
-    | '/admin/courses'
-    | '/admin/dashboard'
-    | '/admin/files'
+    | '/privacy-policy'
     | '/admin/login'
+    | '/admin/media'
     | '/admin/settings'
-    | '/admin/team-members'
-    | '/de/impressum'
+    | '/admin/users'
     | '/de/kontakt'
     | '/de/kurse'
     | '/de/ueber'
+    | '/projects/$slug'
     | '/admin/'
+    | '/projects/'
     | '/admin/blog-posts/$id'
     | '/admin/courses/$id'
+    | '/admin/pages/$slug'
+    | '/admin/projects/$id'
     | '/admin/team-members/$id'
     | '/api/auth/$'
+    | '/api/media/$'
+    | '/de/projekte/$slug'
+    | '/admin/blog-posts/'
+    | '/admin/courses/'
+    | '/admin/pages/'
+    | '/admin/projects/'
+    | '/admin/team-members/'
+    | '/de/projekte/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -285,23 +393,42 @@ export interface RootRouteChildren {
   ContactRoute: typeof ContactRoute
   CoursesRoute: typeof CoursesRoute
   ImprintRoute: typeof ImprintRoute
-  AdminBlogPostsRoute: typeof AdminBlogPostsRouteWithChildren
-  AdminCoursesRoute: typeof AdminCoursesRouteWithChildren
-  AdminDashboardRoute: typeof AdminDashboardRoute
-  AdminFilesRoute: typeof AdminFilesRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminMediaRoute: typeof AdminMediaRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
-  AdminTeamMembersRoute: typeof AdminTeamMembersRouteWithChildren
-  DeImpressumRoute: typeof DeImpressumRoute
+  AdminUsersRoute: typeof AdminUsersRoute
   DeKontaktRoute: typeof DeKontaktRoute
   DeKurseRoute: typeof DeKurseRoute
   DeUeberRoute: typeof DeUeberRoute
+  ProjectsSlugRoute: typeof ProjectsSlugRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  ProjectsIndexRoute: typeof ProjectsIndexRoute
+  AdminBlogPostsIdRoute: typeof AdminBlogPostsIdRoute
+  AdminCoursesIdRoute: typeof AdminCoursesIdRoute
+  AdminPagesSlugRoute: typeof AdminPagesSlugRoute
+  AdminProjectsIdRoute: typeof AdminProjectsIdRoute
+  AdminTeamMembersIdRoute: typeof AdminTeamMembersIdRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiMediaSplatRoute: typeof ApiMediaSplatRoute
+  DeProjekteSlugRoute: typeof DeProjekteSlugRoute
+  AdminBlogPostsIndexRoute: typeof AdminBlogPostsIndexRoute
+  AdminCoursesIndexRoute: typeof AdminCoursesIndexRoute
+  AdminPagesIndexRoute: typeof AdminPagesIndexRoute
+  AdminProjectsIndexRoute: typeof AdminProjectsIndexRoute
+  AdminTeamMembersIndexRoute: typeof AdminTeamMembersIndexRoute
+  DeProjekteIndexRoute: typeof DeProjekteIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/imprint': {
       id: '/imprint'
       path: '/imprint'
@@ -337,11 +464,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/projects/': {
+      id: '/projects/'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/': {
       id: '/admin/'
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects/$slug': {
+      id: '/projects/$slug'
+      path: '/projects/$slug'
+      fullPath: '/projects/$slug'
+      preLoaderRoute: typeof ProjectsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/de/ueber': {
@@ -365,18 +506,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DeKontaktRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/de/impressum': {
-      id: '/de/impressum'
-      path: '/de/impressum'
-      fullPath: '/de/impressum'
-      preLoaderRoute: typeof DeImpressumRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/team-members': {
-      id: '/admin/team-members'
-      path: '/admin/team-members'
-      fullPath: '/admin/team-members'
-      preLoaderRoute: typeof AdminTeamMembersRouteImport
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/admin/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/settings': {
@@ -386,6 +520,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminSettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/media': {
+      id: '/admin/media'
+      path: '/admin/media'
+      fullPath: '/admin/media'
+      preLoaderRoute: typeof AdminMediaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/login': {
       id: '/admin/login'
       path: '/admin/login'
@@ -393,32 +534,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/files': {
-      id: '/admin/files'
-      path: '/admin/files'
-      fullPath: '/admin/files'
-      preLoaderRoute: typeof AdminFilesRouteImport
+    '/de/projekte/': {
+      id: '/de/projekte/'
+      path: '/de/projekte'
+      fullPath: '/de/projekte'
+      preLoaderRoute: typeof DeProjekteIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/dashboard': {
-      id: '/admin/dashboard'
-      path: '/admin/dashboard'
-      fullPath: '/admin/dashboard'
-      preLoaderRoute: typeof AdminDashboardRouteImport
+    '/admin/team-members/': {
+      id: '/admin/team-members/'
+      path: '/admin/team-members'
+      fullPath: '/admin/team-members'
+      preLoaderRoute: typeof AdminTeamMembersIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/courses': {
-      id: '/admin/courses'
+    '/admin/projects/': {
+      id: '/admin/projects/'
+      path: '/admin/projects'
+      fullPath: '/admin/projects'
+      preLoaderRoute: typeof AdminProjectsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/pages/': {
+      id: '/admin/pages/'
+      path: '/admin/pages'
+      fullPath: '/admin/pages'
+      preLoaderRoute: typeof AdminPagesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/courses/': {
+      id: '/admin/courses/'
       path: '/admin/courses'
       fullPath: '/admin/courses'
-      preLoaderRoute: typeof AdminCoursesRouteImport
+      preLoaderRoute: typeof AdminCoursesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/blog-posts': {
-      id: '/admin/blog-posts'
+    '/admin/blog-posts/': {
+      id: '/admin/blog-posts/'
       path: '/admin/blog-posts'
       fullPath: '/admin/blog-posts'
-      preLoaderRoute: typeof AdminBlogPostsRouteImport
+      preLoaderRoute: typeof AdminBlogPostsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/de/projekte/$slug': {
+      id: '/de/projekte/$slug'
+      path: '/de/projekte/$slug'
+      fullPath: '/de/projekte/$slug'
+      preLoaderRoute: typeof DeProjekteSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/media/$': {
+      id: '/api/media/$'
+      path: '/api/media/$'
+      fullPath: '/api/media/$'
+      preLoaderRoute: typeof ApiMediaSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
@@ -430,62 +599,41 @@ declare module '@tanstack/react-router' {
     }
     '/admin/team-members/$id': {
       id: '/admin/team-members/$id'
-      path: '/$id'
+      path: '/admin/team-members/$id'
       fullPath: '/admin/team-members/$id'
       preLoaderRoute: typeof AdminTeamMembersIdRouteImport
-      parentRoute: typeof AdminTeamMembersRoute
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/projects/$id': {
+      id: '/admin/projects/$id'
+      path: '/admin/projects/$id'
+      fullPath: '/admin/projects/$id'
+      preLoaderRoute: typeof AdminProjectsIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/pages/$slug': {
+      id: '/admin/pages/$slug'
+      path: '/admin/pages/$slug'
+      fullPath: '/admin/pages/$slug'
+      preLoaderRoute: typeof AdminPagesSlugRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/courses/$id': {
       id: '/admin/courses/$id'
-      path: '/$id'
+      path: '/admin/courses/$id'
       fullPath: '/admin/courses/$id'
       preLoaderRoute: typeof AdminCoursesIdRouteImport
-      parentRoute: typeof AdminCoursesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/admin/blog-posts/$id': {
       id: '/admin/blog-posts/$id'
-      path: '/$id'
+      path: '/admin/blog-posts/$id'
       fullPath: '/admin/blog-posts/$id'
       preLoaderRoute: typeof AdminBlogPostsIdRouteImport
-      parentRoute: typeof AdminBlogPostsRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
-
-interface AdminBlogPostsRouteChildren {
-  AdminBlogPostsIdRoute: typeof AdminBlogPostsIdRoute
-}
-
-const AdminBlogPostsRouteChildren: AdminBlogPostsRouteChildren = {
-  AdminBlogPostsIdRoute: AdminBlogPostsIdRoute,
-}
-
-const AdminBlogPostsRouteWithChildren = AdminBlogPostsRoute._addFileChildren(
-  AdminBlogPostsRouteChildren,
-)
-
-interface AdminCoursesRouteChildren {
-  AdminCoursesIdRoute: typeof AdminCoursesIdRoute
-}
-
-const AdminCoursesRouteChildren: AdminCoursesRouteChildren = {
-  AdminCoursesIdRoute: AdminCoursesIdRoute,
-}
-
-const AdminCoursesRouteWithChildren = AdminCoursesRoute._addFileChildren(
-  AdminCoursesRouteChildren,
-)
-
-interface AdminTeamMembersRouteChildren {
-  AdminTeamMembersIdRoute: typeof AdminTeamMembersIdRoute
-}
-
-const AdminTeamMembersRouteChildren: AdminTeamMembersRouteChildren = {
-  AdminTeamMembersIdRoute: AdminTeamMembersIdRoute,
-}
-
-const AdminTeamMembersRouteWithChildren =
-  AdminTeamMembersRoute._addFileChildren(AdminTeamMembersRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -493,19 +641,31 @@ const rootRouteChildren: RootRouteChildren = {
   ContactRoute: ContactRoute,
   CoursesRoute: CoursesRoute,
   ImprintRoute: ImprintRoute,
-  AdminBlogPostsRoute: AdminBlogPostsRouteWithChildren,
-  AdminCoursesRoute: AdminCoursesRouteWithChildren,
-  AdminDashboardRoute: AdminDashboardRoute,
-  AdminFilesRoute: AdminFilesRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
   AdminLoginRoute: AdminLoginRoute,
+  AdminMediaRoute: AdminMediaRoute,
   AdminSettingsRoute: AdminSettingsRoute,
-  AdminTeamMembersRoute: AdminTeamMembersRouteWithChildren,
-  DeImpressumRoute: DeImpressumRoute,
+  AdminUsersRoute: AdminUsersRoute,
   DeKontaktRoute: DeKontaktRoute,
   DeKurseRoute: DeKurseRoute,
   DeUeberRoute: DeUeberRoute,
+  ProjectsSlugRoute: ProjectsSlugRoute,
   AdminIndexRoute: AdminIndexRoute,
+  ProjectsIndexRoute: ProjectsIndexRoute,
+  AdminBlogPostsIdRoute: AdminBlogPostsIdRoute,
+  AdminCoursesIdRoute: AdminCoursesIdRoute,
+  AdminPagesSlugRoute: AdminPagesSlugRoute,
+  AdminProjectsIdRoute: AdminProjectsIdRoute,
+  AdminTeamMembersIdRoute: AdminTeamMembersIdRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiMediaSplatRoute: ApiMediaSplatRoute,
+  DeProjekteSlugRoute: DeProjekteSlugRoute,
+  AdminBlogPostsIndexRoute: AdminBlogPostsIndexRoute,
+  AdminCoursesIndexRoute: AdminCoursesIndexRoute,
+  AdminPagesIndexRoute: AdminPagesIndexRoute,
+  AdminProjectsIndexRoute: AdminProjectsIndexRoute,
+  AdminTeamMembersIndexRoute: AdminTeamMembersIndexRoute,
+  DeProjekteIndexRoute: DeProjekteIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

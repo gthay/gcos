@@ -54,6 +54,27 @@ const config = defineConfig({
           ],
         },
         {
+          pattern: '/privacy-policy',
+          localized: [
+            ['en', '/privacy-policy'],
+            ['de', '/de/datenschutz'],
+          ],
+        },
+        {
+          pattern: '/projects',
+          localized: [
+            ['en', '/projects'],
+            ['de', '/de/projekte'],
+          ],
+        },
+        {
+          pattern: '/projects/:slug',
+          localized: [
+            ['en', '/projects/:slug'],
+            ['de', '/de/projekte/:slug'],
+          ],
+        },
+        {
           pattern: '/:path(.*)?',
           localized: [
             ['en', '/:path(.*)?'],

@@ -10,7 +10,11 @@ import {
 	Settings,
 	LogOut,
 	GraduationCap,
-	FolderOpen,
+	ImageIcon,
+	UserCog,
+	Shield,
+	FolderKanban,
+	StickyNote,
 } from "lucide-react";
 import { AuthGuard } from "./AuthGuard";
 
@@ -21,6 +25,10 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
 	const router = useRouterState();
 	const currentPath = router.location.pathname;
+	const { data: session } = authClient.useSession();
+
+	// Check if current user is admin
+	const isAdmin = session?.user?.role === "admin";
 
 	const handleLogout = async () => {
 		try {
@@ -36,7 +44,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 		{
 			icon: LayoutDashboard,
 			label: "Dashboard",
-			href: "/admin/dashboard",
+			href: "/admin",
+		},
+		{
+			icon: FolderKanban,
+			label: "Projects",
+			href: "/admin/projects",
 		},
 		{
 			icon: GraduationCap,
@@ -54,10 +67,25 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 			href: "/admin/team-members",
 		},
 		{
-			icon: FolderOpen,
-			label: "Files",
-			href: "/admin/files",
+			icon: ImageIcon,
+			label: "Media",
+			href: "/admin/media",
 		},
+		{
+			icon: StickyNote,
+			label: "Pages",
+			href: "/admin/pages",
+		},
+		// Users menu - only visible to admins
+		...(isAdmin
+			? [
+					{
+						icon: UserCog,
+						label: "Users",
+						href: "/admin/users",
+					},
+				]
+			: []),
 		{
 			icon: Settings,
 			label: "Settings",
@@ -99,16 +127,32 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 					</nav>
 
 					{/* Footer */}
-					<div className="border-t border-border p-4">
-						<div className="mb-2 flex items-center justify-between">
+					<div className="border-t border-border p-4 space-y-3">
+						{/* User info */}
+						{session?.user && (
+							<div className="flex items-center gap-2 text-sm">
+								<div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+									{isAdmin ? (
+										<Shield className="h-4 w-4 text-primary" />
+									) : (
+										<Users className="h-4 w-4 text-muted-foreground" />
+									)}
+								</div>
+								<div className="flex-1 min-w-0">
+									<p className="truncate font-medium text-sm">
+										{session.user.name || session.user.email}
+									</p>
+									<p className="text-xs text-muted-foreground">
+										{isAdmin ? "Administrator" : "User"}
+									</p>
+								</div>
+							</div>
+						)}
+						<div className="flex items-center justify-between">
 							<span className="text-sm text-muted-foreground">Theme</span>
 							<ThemeToggle />
 						</div>
-						<Button
-							variant="outline"
-							className="w-full"
-							onClick={handleLogout}
-						>
+						<Button variant="outline" className="w-full" onClick={handleLogout}>
 							<LogOut className="mr-2 h-4 w-4" />
 							Logout
 						</Button>
