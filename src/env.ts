@@ -1,44 +1,76 @@
-import { createEnv } from '@t3-oss/env-core'
-import { z } from 'zod'
+const isServer = typeof window === 'undefined'
 
-export const env = createEnv({
-  server: {
-    SERVER_URL: z.string().url().optional(),
-    BETTER_AUTH_SECRET: z.string().min(1),
-    BETTER_AUTH_URL: z.string().url(),
-    MONGODB_URI: z.string().url(),
-    MONGODB_DB_NAME: z.string().min(1).optional(),
+type ServerKey = 'SERVER_URL' | 'BETTER_AUTH_SECRET' | 'BETTER_AUTH_URL' | 'MONGODB_URI' | 'MONGODB_DB_NAME' | 'S3_ENDPOINT' | 'S3_REGION' | 'S3_ACCESS_KEY_ID' | 'S3_SECRET_ACCESS_KEY' | 'S3_BUCKET_NAME'
+type ClientKey = 'VITE_APP_TITLE'
+
+const readServerEnv = (key: ServerKey, options?: { required?: boolean }) => {
+  if (!isServer) {
+    return undefined
+  }
+
+  const value = process.env[key]
+  if (!value || value.length === 0) {
+    if (options?.required) {
+      throw new Error(`Missing required environment variable "${key}"`)
+    }
+    return undefined
+  }
+  return value
+}
+
+const readClientEnv = (key: ClientKey) => {
+  if (isServer) {
+    return process.env[key]
+  }
+
+  return import.meta.env[key]
+}
+
+export const env = {
+  get SERVER_URL() {
+    return readServerEnv('SERVER_URL')
   },
-
-  /**
-   * The prefix that client-side variables must have. This is enforced both at
-   * a type-level and at runtime.
-   */
-  clientPrefix: 'VITE_',
-
-  client: {
-    VITE_APP_TITLE: z.string().min(1).optional(),
+  get BETTER_AUTH_SECRET() {
+    const value = readServerEnv('BETTER_AUTH_SECRET', { required: true })
+    if (!value) {
+      throw new Error('Missing BETTER_AUTH_SECRET')
+    }
+    return value
   },
-
-  /**
-   * What object holds the environment variables at runtime. This is usually
-   * `process.env` or `import.meta.env`.
-   */
-  runtimeEnv:
-    typeof import.meta !== 'undefined' ? import.meta.env : process.env,
-
-  /**
-   * By default, this library will feed the environment variables directly to
-   * the Zod validator.
-   *
-   * This means that if you have an empty string for a value that is supposed
-   * to be a number (e.g. `PORT=` in a ".env" file), Zod will incorrectly flag
-   * it as a type mismatch violation. Additionally, if you have an empty string
-   * for a value that is supposed to be a string with a default value (e.g.
-   * `DOMAIN=` in an ".env" file), the default value will never be applied.
-   *
-   * In order to solve these issues, we recommend that all new projects
-   * explicitly specify this option as true.
-   */
-  emptyStringAsUndefined: true,
-})
+  get BETTER_AUTH_URL() {
+    const value = readServerEnv('BETTER_AUTH_URL', { required: true })
+    if (!value) {
+      throw new Error('Missing BETTER_AUTH_URL')
+    }
+    return value
+  },
+  get MONGODB_URI() {
+    const value = readServerEnv('MONGODB_URI', { required: true })
+    if (!value) {
+      throw new Error('Missing MONGODB_URI')
+    }
+    return value
+  },
+  get MONGODB_DB_NAME() {
+    return readServerEnv('MONGODB_DB_NAME')
+  },
+  get VITE_APP_TITLE() {
+    return readClientEnv('VITE_APP_TITLE')
+  },
+  // S3 Storage (Hetzner)
+  get S3_ENDPOINT() {
+    return readServerEnv('S3_ENDPOINT')
+  },
+  get S3_REGION() {
+    return readServerEnv('S3_REGION')
+  },
+  get S3_ACCESS_KEY_ID() {
+    return readServerEnv('S3_ACCESS_KEY_ID')
+  },
+  get S3_SECRET_ACCESS_KEY() {
+    return readServerEnv('S3_SECRET_ACCESS_KEY')
+  },
+  get S3_BUCKET_NAME() {
+    return readServerEnv('S3_BUCKET_NAME')
+  },
+}

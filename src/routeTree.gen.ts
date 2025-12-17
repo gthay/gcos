@@ -10,17 +10,35 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ImprintRouteImport } from './routes/imprint'
+import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as DeUeberRouteImport } from './routes/de/ueber'
+import { Route as DeKurseRouteImport } from './routes/de/kurse'
 import { Route as DeKontaktRouteImport } from './routes/de/kontakt'
 import { Route as DeImpressumRouteImport } from './routes/de/impressum'
+import { Route as AdminTeamMembersRouteImport } from './routes/admin/team-members'
+import { Route as AdminSettingsRouteImport } from './routes/admin/settings'
+import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as AdminFilesRouteImport } from './routes/admin/files'
+import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard'
+import { Route as AdminCoursesRouteImport } from './routes/admin/courses'
+import { Route as AdminBlogPostsRouteImport } from './routes/admin/blog-posts'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as AdminTeamMembersIdRouteImport } from './routes/admin/team-members/$id'
+import { Route as AdminCoursesIdRouteImport } from './routes/admin/courses/$id'
+import { Route as AdminBlogPostsIdRouteImport } from './routes/admin/blog-posts/$id'
 
 const ImprintRoute = ImprintRouteImport.update({
   id: '/imprint',
   path: '/imprint',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesRoute = CoursesRouteImport.update({
+  id: '/courses',
+  path: '/courses',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -38,9 +56,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DeUeberRoute = DeUeberRouteImport.update({
   id: '/de/ueber',
   path: '/de/ueber',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeKurseRoute = DeKurseRouteImport.update({
+  id: '/de/kurse',
+  path: '/de/kurse',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DeKontaktRoute = DeKontaktRouteImport.update({
@@ -53,30 +81,106 @@ const DeImpressumRoute = DeImpressumRouteImport.update({
   path: '/de/impressum',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminTeamMembersRoute = AdminTeamMembersRouteImport.update({
+  id: '/admin/team-members',
+  path: '/admin/team-members',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/admin/settings',
+  path: '/admin/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminFilesRoute = AdminFilesRouteImport.update({
+  id: '/admin/files',
+  path: '/admin/files',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/admin/dashboard',
+  path: '/admin/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminCoursesRoute = AdminCoursesRouteImport.update({
+  id: '/admin/courses',
+  path: '/admin/courses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminBlogPostsRoute = AdminBlogPostsRouteImport.update({
+  id: '/admin/blog-posts',
+  path: '/admin/blog-posts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminTeamMembersIdRoute = AdminTeamMembersIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminTeamMembersRoute,
+} as any)
+const AdminCoursesIdRoute = AdminCoursesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminCoursesRoute,
+} as any)
+const AdminBlogPostsIdRoute = AdminBlogPostsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AdminBlogPostsRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/courses': typeof CoursesRoute
   '/imprint': typeof ImprintRoute
+  '/admin/blog-posts': typeof AdminBlogPostsRouteWithChildren
+  '/admin/courses': typeof AdminCoursesRouteWithChildren
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/files': typeof AdminFilesRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/team-members': typeof AdminTeamMembersRouteWithChildren
   '/de/impressum': typeof DeImpressumRoute
   '/de/kontakt': typeof DeKontaktRoute
+  '/de/kurse': typeof DeKurseRoute
   '/de/ueber': typeof DeUeberRoute
+  '/admin': typeof AdminIndexRoute
+  '/admin/blog-posts/$id': typeof AdminBlogPostsIdRoute
+  '/admin/courses/$id': typeof AdminCoursesIdRoute
+  '/admin/team-members/$id': typeof AdminTeamMembersIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/courses': typeof CoursesRoute
   '/imprint': typeof ImprintRoute
+  '/admin/blog-posts': typeof AdminBlogPostsRouteWithChildren
+  '/admin/courses': typeof AdminCoursesRouteWithChildren
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/files': typeof AdminFilesRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/team-members': typeof AdminTeamMembersRouteWithChildren
   '/de/impressum': typeof DeImpressumRoute
   '/de/kontakt': typeof DeKontaktRoute
+  '/de/kurse': typeof DeKurseRoute
   '/de/ueber': typeof DeUeberRoute
+  '/admin': typeof AdminIndexRoute
+  '/admin/blog-posts/$id': typeof AdminBlogPostsIdRoute
+  '/admin/courses/$id': typeof AdminCoursesIdRoute
+  '/admin/team-members/$id': typeof AdminTeamMembersIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
@@ -84,10 +188,23 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
+  '/courses': typeof CoursesRoute
   '/imprint': typeof ImprintRoute
+  '/admin/blog-posts': typeof AdminBlogPostsRouteWithChildren
+  '/admin/courses': typeof AdminCoursesRouteWithChildren
+  '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/files': typeof AdminFilesRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/team-members': typeof AdminTeamMembersRouteWithChildren
   '/de/impressum': typeof DeImpressumRoute
   '/de/kontakt': typeof DeKontaktRoute
+  '/de/kurse': typeof DeKurseRoute
   '/de/ueber': typeof DeUeberRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/blog-posts/$id': typeof AdminBlogPostsIdRoute
+  '/admin/courses/$id': typeof AdminCoursesIdRoute
+  '/admin/team-members/$id': typeof AdminTeamMembersIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
@@ -96,30 +213,69 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/contact'
+    | '/courses'
     | '/imprint'
+    | '/admin/blog-posts'
+    | '/admin/courses'
+    | '/admin/dashboard'
+    | '/admin/files'
+    | '/admin/login'
+    | '/admin/settings'
+    | '/admin/team-members'
     | '/de/impressum'
     | '/de/kontakt'
+    | '/de/kurse'
     | '/de/ueber'
+    | '/admin'
+    | '/admin/blog-posts/$id'
+    | '/admin/courses/$id'
+    | '/admin/team-members/$id'
     | '/api/auth/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/contact'
+    | '/courses'
     | '/imprint'
+    | '/admin/blog-posts'
+    | '/admin/courses'
+    | '/admin/dashboard'
+    | '/admin/files'
+    | '/admin/login'
+    | '/admin/settings'
+    | '/admin/team-members'
     | '/de/impressum'
     | '/de/kontakt'
+    | '/de/kurse'
     | '/de/ueber'
+    | '/admin'
+    | '/admin/blog-posts/$id'
+    | '/admin/courses/$id'
+    | '/admin/team-members/$id'
     | '/api/auth/$'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/contact'
+    | '/courses'
     | '/imprint'
+    | '/admin/blog-posts'
+    | '/admin/courses'
+    | '/admin/dashboard'
+    | '/admin/files'
+    | '/admin/login'
+    | '/admin/settings'
+    | '/admin/team-members'
     | '/de/impressum'
     | '/de/kontakt'
+    | '/de/kurse'
     | '/de/ueber'
+    | '/admin/'
+    | '/admin/blog-posts/$id'
+    | '/admin/courses/$id'
+    | '/admin/team-members/$id'
     | '/api/auth/$'
   fileRoutesById: FileRoutesById
 }
@@ -127,10 +283,20 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
+  CoursesRoute: typeof CoursesRoute
   ImprintRoute: typeof ImprintRoute
+  AdminBlogPostsRoute: typeof AdminBlogPostsRouteWithChildren
+  AdminCoursesRoute: typeof AdminCoursesRouteWithChildren
+  AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminFilesRoute: typeof AdminFilesRoute
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminTeamMembersRoute: typeof AdminTeamMembersRouteWithChildren
   DeImpressumRoute: typeof DeImpressumRoute
   DeKontaktRoute: typeof DeKontaktRoute
+  DeKurseRoute: typeof DeKurseRoute
   DeUeberRoute: typeof DeUeberRoute
+  AdminIndexRoute: typeof AdminIndexRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
@@ -141,6 +307,13 @@ declare module '@tanstack/react-router' {
       path: '/imprint'
       fullPath: '/imprint'
       preLoaderRoute: typeof ImprintRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses': {
+      id: '/courses'
+      path: '/courses'
+      fullPath: '/courses'
+      preLoaderRoute: typeof CoursesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -164,11 +337,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/de/ueber': {
       id: '/de/ueber'
       path: '/de/ueber'
       fullPath: '/de/ueber'
       preLoaderRoute: typeof DeUeberRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/de/kurse': {
+      id: '/de/kurse'
+      path: '/de/kurse'
+      fullPath: '/de/kurse'
+      preLoaderRoute: typeof DeKurseRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/de/kontakt': {
@@ -185,6 +372,55 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DeImpressumRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/team-members': {
+      id: '/admin/team-members'
+      path: '/admin/team-members'
+      fullPath: '/admin/team-members'
+      preLoaderRoute: typeof AdminTeamMembersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/admin/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/files': {
+      id: '/admin/files'
+      path: '/admin/files'
+      fullPath: '/admin/files'
+      preLoaderRoute: typeof AdminFilesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/admin/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/courses': {
+      id: '/admin/courses'
+      path: '/admin/courses'
+      fullPath: '/admin/courses'
+      preLoaderRoute: typeof AdminCoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/blog-posts': {
+      id: '/admin/blog-posts'
+      path: '/admin/blog-posts'
+      fullPath: '/admin/blog-posts'
+      preLoaderRoute: typeof AdminBlogPostsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -192,17 +428,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/team-members/$id': {
+      id: '/admin/team-members/$id'
+      path: '/$id'
+      fullPath: '/admin/team-members/$id'
+      preLoaderRoute: typeof AdminTeamMembersIdRouteImport
+      parentRoute: typeof AdminTeamMembersRoute
+    }
+    '/admin/courses/$id': {
+      id: '/admin/courses/$id'
+      path: '/$id'
+      fullPath: '/admin/courses/$id'
+      preLoaderRoute: typeof AdminCoursesIdRouteImport
+      parentRoute: typeof AdminCoursesRoute
+    }
+    '/admin/blog-posts/$id': {
+      id: '/admin/blog-posts/$id'
+      path: '/$id'
+      fullPath: '/admin/blog-posts/$id'
+      preLoaderRoute: typeof AdminBlogPostsIdRouteImport
+      parentRoute: typeof AdminBlogPostsRoute
+    }
   }
 }
+
+interface AdminBlogPostsRouteChildren {
+  AdminBlogPostsIdRoute: typeof AdminBlogPostsIdRoute
+}
+
+const AdminBlogPostsRouteChildren: AdminBlogPostsRouteChildren = {
+  AdminBlogPostsIdRoute: AdminBlogPostsIdRoute,
+}
+
+const AdminBlogPostsRouteWithChildren = AdminBlogPostsRoute._addFileChildren(
+  AdminBlogPostsRouteChildren,
+)
+
+interface AdminCoursesRouteChildren {
+  AdminCoursesIdRoute: typeof AdminCoursesIdRoute
+}
+
+const AdminCoursesRouteChildren: AdminCoursesRouteChildren = {
+  AdminCoursesIdRoute: AdminCoursesIdRoute,
+}
+
+const AdminCoursesRouteWithChildren = AdminCoursesRoute._addFileChildren(
+  AdminCoursesRouteChildren,
+)
+
+interface AdminTeamMembersRouteChildren {
+  AdminTeamMembersIdRoute: typeof AdminTeamMembersIdRoute
+}
+
+const AdminTeamMembersRouteChildren: AdminTeamMembersRouteChildren = {
+  AdminTeamMembersIdRoute: AdminTeamMembersIdRoute,
+}
+
+const AdminTeamMembersRouteWithChildren =
+  AdminTeamMembersRoute._addFileChildren(AdminTeamMembersRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
+  CoursesRoute: CoursesRoute,
   ImprintRoute: ImprintRoute,
+  AdminBlogPostsRoute: AdminBlogPostsRouteWithChildren,
+  AdminCoursesRoute: AdminCoursesRouteWithChildren,
+  AdminDashboardRoute: AdminDashboardRoute,
+  AdminFilesRoute: AdminFilesRoute,
+  AdminLoginRoute: AdminLoginRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminTeamMembersRoute: AdminTeamMembersRouteWithChildren,
   DeImpressumRoute: DeImpressumRoute,
   DeKontaktRoute: DeKontaktRoute,
+  DeKurseRoute: DeKurseRoute,
   DeUeberRoute: DeUeberRoute,
+  AdminIndexRoute: AdminIndexRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }
 export const routeTree = rootRouteImport

@@ -40,6 +40,13 @@ const config = defineConfig({
           ],
         },
         {
+          pattern: '/courses',
+          localized: [
+            ['en', '/courses'],
+            ['de', '/de/kurse'],
+          ],
+        },
+        {
           pattern: '/imprint',
           localized: [
             ['en', '/imprint'],

@@ -38,6 +38,12 @@ export function Header() {
 					>
 						{m.nav_about()}
 					</Link>
+					<Link
+						to={localizeHref('/courses')}
+						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
+					>
+						{m.nav_courses()}
+					</Link>
 					<a
 						href="#"
 						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
@@ -54,7 +60,7 @@ export function Header() {
 						href="#"
 						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
 					>
-						{m['nav_getInvolved']()}
+						{m.nav_getInvolved()}
 					</a>
 					<Link
 						to={localizeHref('/contact')}
