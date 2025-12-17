@@ -29,6 +29,7 @@ export async function getAuth() {
 			database: mongodbAdapter(db),
 			baseURL: env.BETTER_AUTH_URL,
 			secret: env.BETTER_AUTH_SECRET,
+			trustedOrigins: env.BETTER_AUTH_TRUSTED_ORIGINS,
 			emailAndPassword: {
 				enabled: true,
 			},

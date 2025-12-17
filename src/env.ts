@@ -1,6 +1,6 @@
 const isServer = typeof window === 'undefined'
 
-type ServerKey = 'SERVER_URL' | 'BETTER_AUTH_SECRET' | 'BETTER_AUTH_URL' | 'MONGODB_URI' | 'MONGODB_DB_NAME' | 'S3_ENDPOINT' | 'S3_REGION' | 'S3_ACCESS_KEY_ID' | 'S3_SECRET_ACCESS_KEY' | 'S3_BUCKET_NAME'
+type ServerKey = 'SERVER_URL' | 'BETTER_AUTH_SECRET' | 'BETTER_AUTH_URL' | 'BETTER_AUTH_TRUSTED_ORIGINS' | 'MONGODB_URI' | 'MONGODB_DB_NAME' | 'S3_ENDPOINT' | 'S3_REGION' | 'S3_ACCESS_KEY_ID' | 'S3_SECRET_ACCESS_KEY' | 'S3_BUCKET_NAME'
 type ClientKey = 'VITE_APP_TITLE'
 
 const readServerEnv = (key: ServerKey, options?: { required?: boolean }) => {
@@ -43,6 +43,14 @@ export const env = {
       throw new Error('Missing BETTER_AUTH_URL')
     }
     return value
+  },
+  get BETTER_AUTH_TRUSTED_ORIGINS() {
+    // Comma-separated list of trusted origins, e.g., "https://hayinger.com,https://gcos.ai"
+    const value = readServerEnv('BETTER_AUTH_TRUSTED_ORIGINS')
+    if (!value) {
+      return []
+    }
+    return value.split(',').map(origin => origin.trim()).filter(Boolean)
   },
   get MONGODB_URI() {
     const value = readServerEnv('MONGODB_URI', { required: true })
