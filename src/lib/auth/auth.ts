@@ -24,12 +24,19 @@ export async function getAuth() {
 		// Initialize database before creating auth instance
 		const db = await initDb();
 		
+		// Build trusted origins list - always include baseURL
+		const baseOrigin = new URL(env.BETTER_AUTH_URL).origin;
+		const trustedOrigins = [
+			baseOrigin,
+			...env.BETTER_AUTH_TRUSTED_ORIGINS.filter(origin => origin !== baseOrigin),
+		];
+
 		// Create auth instance
 		authInstance = betterAuth({
 			database: mongodbAdapter(db),
 			baseURL: env.BETTER_AUTH_URL,
 			secret: env.BETTER_AUTH_SECRET,
-			trustedOrigins: env.BETTER_AUTH_TRUSTED_ORIGINS,
+			trustedOrigins,
 			emailAndPassword: {
 				enabled: true,
 			},
