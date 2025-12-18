@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import {
 	Accordion,
@@ -76,10 +76,10 @@ function HomePage() {
 					</p>
 					<div className="flex flex-col gap-4 sm:flex-row">
 						<Button size="lg" asChild>
-							<a href="#">{m.hero_exploreProjects()}</a>
+							<Link to="/projects">{m.hero_exploreProjects()}</Link>
 						</Button>
 						<Button size="lg" variant="outline" asChild>
-							<a href="#">{m.hero_getSupport()}</a>
+							<Link to="/contact">{m.hero_getSupport()}</Link>
 						</Button>
 					</div>
 				</div>
@@ -506,16 +506,16 @@ function HomePage() {
 					</h2>
 					<div className="flex flex-col gap-4 sm:flex-row">
 						<Button size="lg" asChild>
-							<a href="#">{m.cta_becomeMember()}</a>
+							<Link to="/contact">{m.cta_becomeMember()}</Link>
 						</Button>
 						<Button size="lg" variant="outline" asChild>
-							<a href="#">{m.cta_startProject()}</a>
+							<Link to="/contact">{m.cta_startProject()}</Link>
 						</Button>
 						<Button size="lg" variant="outline" asChild>
-							<a href="#">{m.cta_bookConsultation()}</a>
+							<Link to="/contact">{m.cta_bookConsultation()}</Link>
 						</Button>
 						<Button size="lg" variant="outline" asChild>
-							<a href="#">{m.cta_donate()}</a>
+							<Link to="/donate">{m.cta_donate()}</Link>
 						</Button>
 					</div>
 				</div>

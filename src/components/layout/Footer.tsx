@@ -8,6 +8,7 @@ const translations = {
 	en: {
 		sitemap: "Sitemap",
 		about: "About",
+		team: "Team",
 		projects: "Projects",
 		donate: "Donate",
 		contact: "Contact",
@@ -20,6 +21,7 @@ const translations = {
 	de: {
 		sitemap: "Sitemap",
 		about: "Über uns",
+		team: "Team",
 		projects: "Projekte",
 		donate: "Spenden",
 		contact: "Kontakt",
@@ -108,6 +110,14 @@ export function Footer({ locale }: { locale: Locale }) {
 									className="text-muted-foreground hover:text-foreground transition-colors"
 								>
 									{t.about}
+								</Link>
+							</li>
+							<li>
+								<Link
+									to="/team"
+									className="text-muted-foreground hover:text-foreground transition-colors"
+								>
+									{t.team}
 								</Link>
 							</li>
 							<li>
