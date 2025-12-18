@@ -30,3 +30,5 @@ export function withLocale(locale: Locale, path: string): string {
 	const clean = path.startsWith("/") ? path : `/${path}`;
 	return locale === "en" ? clean : `/${locale}${clean === "/" ? "" : clean}`;
 }
+
+

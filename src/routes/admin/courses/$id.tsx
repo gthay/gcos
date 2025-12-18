@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DashboardLayout } from "@/components/admin/DashboardLayout";
 import { getCourse, createCourse, updateCourse } from "@/lib/server/courses";
 import type { CourseHost, LearningTopic } from "@/lib/schemas/course";
@@ -103,9 +103,13 @@ function CourseEditorPage() {
 		},
 	});
 
-	// Update form when course loads
+	// Track if form has been initialized to prevent overwriting user changes
+	const hasInitializedRef = useRef(false);
+
+	// Update form when course loads - ONLY ONCE
 	useEffect(() => {
-		if (course && !isNew) {
+		if (course && !isNew && !hasInitializedRef.current) {
+			hasInitializedRef.current = true;
 			form.setFieldValue("h1", course.h1);
 			form.setFieldValue("metaTitle", course.metaTitle);
 			form.setFieldValue("metaDescription", course.metaDescription);

@@ -9,11 +9,9 @@ const translations = {
 		sitemap: "Sitemap",
 		about: "About",
 		projects: "Projects",
-		services: "Services",
-		getInvolved: "Get Involved",
+		donate: "Donate",
 		contact: "Contact",
 		contactUs: "Contact Us",
-		newsletter: "Newsletter",
 		legal: "Legal",
 		imprint: "Imprint",
 		privacy: "Privacy Policy",
@@ -23,11 +21,9 @@ const translations = {
 		sitemap: "Sitemap",
 		about: "Über uns",
 		projects: "Projekte",
-		services: "Leistungen",
-		getInvolved: "Mitmachen",
+		donate: "Spenden",
 		contact: "Kontakt",
 		contactUs: "Kontaktieren Sie uns",
-		newsletter: "Newsletter",
 		legal: "Rechtliches",
 		imprint: "Impressum",
 		privacy: "Datenschutz",
@@ -123,20 +119,12 @@ export function Footer({ locale }: { locale: Locale }) {
 								</Link>
 							</li>
 							<li>
-								<a
-									href="#"
+								<Link
+									to="/donate"
 									className="text-muted-foreground hover:text-foreground transition-colors"
 								>
-									{t.services}
-								</a>
-							</li>
-							<li>
-								<a
-									href="#"
-									className="text-muted-foreground hover:text-foreground transition-colors"
-								>
-									{t.getInvolved}
-								</a>
+									{t.donate}
+								</Link>
 							</li>
 						</ul>
 					</div>
@@ -151,11 +139,6 @@ export function Footer({ locale }: { locale: Locale }) {
 								>
 									{t.contactUs}
 								</Link>
-							</li>
-							<li>
-								<a href="#" className="hover:text-foreground transition-colors">
-									{t.newsletter}
-								</a>
 							</li>
 						</ul>
 					</div>

@@ -83,3 +83,5 @@ if (!email) {
 setAdminRole(email).then(() => {
 	process.exit(0);
 });
+
+

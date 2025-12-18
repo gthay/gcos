@@ -241,23 +241,6 @@ function AboutPage() {
 
 			<Separator />
 
-			{/* 5. Team */}
-			<section className="container py-16 md:py-24">
-				<div className="mx-auto max-w-5xl">
-					<h2 className="mb-4 text-center text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
-						{m.about_team_headline()}
-					</h2>
-					<p className="mb-12 text-center text-lg text-muted-foreground">
-						{m.about_team_description()}
-					</p>
-					<div className="text-center text-muted-foreground">
-						<p>No team members found.</p>
-					</div>
-				</div>
-			</section>
-
-			<Separator />
-
 			{/* 9. Legal Structure */}
 			<section className="container py-16 md:py-24">
 				<div className="mx-auto max-w-3xl">

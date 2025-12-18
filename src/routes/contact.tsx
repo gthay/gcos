@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Mail, MapPin, Phone, Users } from "lucide-react";
+import { useState } from "react";
+import { Mail, MapPin, Phone, Users, Loader2, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -11,12 +12,53 @@ import { ProtectedEmail } from "@/components/ui/ProtectedEmail";
 import { ProtectedPhone } from "@/components/ui/ProtectedPhone";
 import { localizeHref } from "@/paraglide/runtime.js";
 import * as m from "@/paraglide/messages";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/contact")({
 	component: ContactPage,
 });
 
+const WEBHOOK_URL =
+	"https://kivorsprung.app.n8n.cloud/webhook/50acbf8b-8bba-4170-aca7-991cc149c70c";
+
 function ContactPage() {
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [isSubmitted, setIsSubmitted] = useState(false);
+
+	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		setIsSubmitting(true);
+
+		const formData = new FormData(e.currentTarget);
+		const data = {
+			name: formData.get("name") as string,
+			email: formData.get("email") as string,
+			organization: formData.get("organization") as string,
+			message: formData.get("message") as string,
+			submittedAt: new Date().toISOString(),
+		};
+
+		try {
+			const response = await fetch(WEBHOOK_URL, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to submit form");
+			}
+
+			setIsSubmitted(true);
+			toast.success(m.contact_form_success());
+		} catch {
+			toast.error(m.contact_form_error());
+		} finally {
+			setIsSubmitting(false);
+		}
+	}
 	return (
 		<div className="flex flex-col">
 			{/* Hero Section */}
@@ -51,64 +93,101 @@ function ContactPage() {
 					<h2 className="mb-6 text-2xl font-semibold">
 						{m.contact_form_title()}
 					</h2>
-					<form className="space-y-6">
-						<div className="space-y-2">
-							<Label htmlFor="name">
-								{m.contact_form_name()}{" "}
-								<span className="text-destructive">*</span>
-							</Label>
-							<Input id="name" name="name" required />
+					{isSubmitted ? (
+						<div className="rounded-lg border border-green-200 bg-green-50 p-8 text-center dark:border-green-800 dark:bg-green-950">
+							<CheckCircle2 className="mx-auto mb-4 h-12 w-12 text-green-600 dark:text-green-400" />
+							<h3 className="mb-2 text-xl font-semibold text-green-800 dark:text-green-200">
+								{m.contact_form_success_title()}
+							</h3>
+							<p className="text-green-700 dark:text-green-300">
+								{m.contact_form_success_message()}
+							</p>
 						</div>
+					) : (
+						<form className="space-y-6" onSubmit={handleSubmit}>
+							<div className="space-y-2">
+								<Label htmlFor="name">
+									{m.contact_form_name()}{" "}
+									<span className="text-destructive">*</span>
+								</Label>
+								<Input id="name" name="name" required disabled={isSubmitting} />
+							</div>
 
-						<div className="space-y-2">
-							<Label htmlFor="email">
-								{m.contact_form_email()}{" "}
-								<span className="text-destructive">*</span>
-							</Label>
-							<Input id="email" name="email" type="email" required />
-						</div>
+							<div className="space-y-2">
+								<Label htmlFor="email">
+									{m.contact_form_email()}{" "}
+									<span className="text-destructive">*</span>
+								</Label>
+								<Input
+									id="email"
+									name="email"
+									type="email"
+									required
+									disabled={isSubmitting}
+								/>
+							</div>
 
-						<div className="space-y-2">
-							<Label htmlFor="organization">
-								{m.contact_form_organization()}
-							</Label>
-							<Input id="organization" name="organization" />
-						</div>
+							<div className="space-y-2">
+								<Label htmlFor="organization">
+									{m.contact_form_organization()}
+								</Label>
+								<Input
+									id="organization"
+									name="organization"
+									disabled={isSubmitting}
+								/>
+							</div>
 
-						<div className="space-y-2">
-							<Label htmlFor="message">
-								{m.contact_form_message()}{" "}
-								<span className="text-destructive">*</span>
-							</Label>
-							<Textarea
-								id="message"
-								name="message"
-								rows={6}
-								required
-								className="min-h-[150px]"
-							/>
-						</div>
+							<div className="space-y-2">
+								<Label htmlFor="message">
+									{m.contact_form_message()}{" "}
+									<span className="text-destructive">*</span>
+								</Label>
+								<Textarea
+									id="message"
+									name="message"
+									rows={6}
+									required
+									className="min-h-[150px]"
+									disabled={isSubmitting}
+								/>
+							</div>
 
-						<div className="flex items-start gap-2">
-							<Checkbox id="privacy" name="privacy" required />
-							<Label
-								htmlFor="privacy"
-								className="text-sm font-normal leading-relaxed"
-							>
-								{m.contact_form_privacy_text()}{" "}
+							<div className="flex items-start gap-2">
+								<Checkbox
+									id="privacy"
+									name="privacy"
+									required
+									disabled={isSubmitting}
+								/>
+								<Label
+									htmlFor="privacy"
+									className="text-sm font-normal leading-relaxed"
+								>
+									{m.contact_form_privacy_text()}{" "}
 								<Link
 									to={localizeHref("/privacy-policy")}
+									target="_blank"
+									rel="noopener noreferrer"
 									className="text-primary hover:underline"
 								>
 									{m.contact_form_privacy_link()}
 								</Link>
-							</Label>
-						</div>
+								</Label>
+							</div>
 
-						<Button type="submit" className="w-full">
-							{m.contact_form_submit()}
-						</Button>
-					</form>
+							<Button type="submit" className="w-full" disabled={isSubmitting}>
+								{isSubmitting ? (
+									<>
+										<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+										{m.contact_form_submitting()}
+									</>
+								) : (
+									m.contact_form_submit()
+								)}
+							</Button>
+						</form>
+					)}
 				</div>
 			</section>
 
@@ -164,7 +243,7 @@ function ContactPage() {
 							</p>
 							<div className="flex flex-col gap-4">
 								<a
-									href="#"
+									href="https://discord.gg/7uKdHfdcJG"
 									target="_blank"
 									rel="noopener noreferrer"
 									className="flex items-center gap-3 text-sm font-medium text-primary hover:underline"

@@ -16,3 +16,5 @@ export const Route = createFileRoute("/de/projekte/")({
 	}),
 	component: ProjectsPageContent,
 });
+
+

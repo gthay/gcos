@@ -10,7 +10,7 @@ export const blogPostCreateSchema = z.object({
 	body: z.string().min(1, "Body is required"),
 	category: z.string().min(1, "Category is required"),
 	author: z.string().min(1, "Author is required"),
-	thumbnail: z.string().url("Thumbnail must be a valid URL").optional().or(z.literal("")),
+	thumbnail: z.string().optional().or(z.literal("")),
 });
 
 export type BlogPostCreate = z.infer<typeof blogPostCreateSchema>;
@@ -29,7 +29,7 @@ export async function getBlogPostSchema() {
 		body: z.string().min(1, "Body is required"),
 		category: z.string().min(1, "Category is required"),
 		author: z.string().min(1, "Author is required"),
-		thumbnail: z.string().url("Thumbnail must be a valid URL").optional().or(z.literal("")),
+		thumbnail: z.string().optional().or(z.literal("")),
 		createdAt: z.date().optional(),
 		updatedAt: z.date().optional(),
 	});

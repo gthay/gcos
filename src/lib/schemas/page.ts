@@ -47,3 +47,5 @@ export type Page = {
 	contentDe: string;
 	updatedAt?: Date;
 };
+
+

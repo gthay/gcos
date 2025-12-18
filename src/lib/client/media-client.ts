@@ -8,3 +8,5 @@ export async function getMediaFiles() {
 	const { getFiles } = await import("@/lib/server/media");
 	return getFiles();
 }
+
+

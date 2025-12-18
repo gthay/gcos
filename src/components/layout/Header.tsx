@@ -9,20 +9,18 @@ const translations = {
 	en: {
 		home: "Home",
 		about: "About",
-		courses: "Courses",
+		team: "Team",
+		courses: "Courses", // TODO: Re-enable when courses page is ready
 		projects: "Projects",
-		services: "Services",
-		getInvolved: "Get Involved",
 		contact: "Contact",
 		donate: "Donate",
 	},
 	de: {
 		home: "Startseite",
 		about: "Über uns",
-		courses: "Kurse",
+		team: "Team",
+		courses: "Kurse", // TODO: Re-enable when courses page is ready
 		projects: "Projekte",
-		services: "Leistungen",
-		getInvolved: "Mitmachen",
 		contact: "Kontakt",
 		donate: "Spenden",
 	},
@@ -65,29 +63,25 @@ export function Header({ locale }: { locale: Locale }) {
 						{nav.about}
 					</Link>
 					<Link
+						to="/team"
+						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
+					>
+						{nav.team}
+					</Link>
+					{/* TODO: Re-enable when courses page is ready
+					<Link
 						to="/courses"
 						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
 					>
 						{nav.courses}
 					</Link>
+					*/}
 					<Link
 						to="/projects"
 						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
 					>
 						{nav.projects}
 					</Link>
-					<a
-						href="#"
-						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
-					>
-						{nav.services}
-					</a>
-					<a
-						href="#"
-						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
-					>
-						{nav.getInvolved}
-					</a>
 					<Link
 						to="/contact"
 						className="text-base font-normal transition-colors hover:text-foreground/80 text-foreground/60"
@@ -97,7 +91,7 @@ export function Header({ locale }: { locale: Locale }) {
 				</nav>
 				<div className="flex items-center gap-4">
 					<Button size="sm" className="text-base" asChild>
-						<a href="#">{nav.donate}</a>
+						<Link to="/donate">{nav.donate}</Link>
 					</Button>
 					<LanguageSwitcher locale={locale} />
 					<ThemeToggle />

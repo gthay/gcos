@@ -13,6 +13,7 @@ import { getProjects } from "@/lib/server/projects";
 import { localizeHref } from "@/paraglide/runtime.js";
 import * as m from "@/paraglide/messages";
 import { Github, BookOpen, Globe } from "lucide-react";
+import { getMediaUrl } from "@/lib/media-utils";
 
 export const Route = createFileRoute("/projects/")({
 	head: () => ({
@@ -48,7 +49,7 @@ export function ProjectsPageContent() {
 						{[1, 2, 3].map((i) => (
 							<Card key={i} className="animate-pulse">
 								<CardHeader>
-									<div className="h-12 w-12 bg-muted rounded-lg" />
+									<div className="h-16 w-32 bg-muted rounded-lg" />
 									<div className="h-6 w-32 bg-muted rounded mt-4" />
 								</CardHeader>
 								<CardContent>
@@ -72,19 +73,21 @@ export function ProjectsPageContent() {
 								className="flex h-full flex-col overflow-hidden hover:shadow-lg transition-shadow"
 							>
 								<CardHeader>
-									{project.logo ? (
-										<img
-											src={project.logo}
-											alt={`${project.name} logo`}
-											className="h-12 w-12 object-contain"
-										/>
-									) : (
-										<div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
-											<span className="text-xl font-bold text-primary">
-												{project.name.charAt(0).toUpperCase()}
-											</span>
-										</div>
-									)}
+									<div className="h-16 flex items-center">
+										{project.logo ? (
+											<img
+												src={getMediaUrl(project.logo)}
+												alt={`${project.name} logo`}
+												className="h-full max-w-[180px] object-contain object-left"
+											/>
+										) : (
+											<div className="h-14 w-14 rounded-lg bg-primary/10 flex items-center justify-center">
+												<span className="text-2xl font-bold text-primary">
+													{project.name.charAt(0).toUpperCase()}
+												</span>
+											</div>
+										)}
+									</div>
 									<CardTitle className="text-xl mt-4">{project.name}</CardTitle>
 									<CardDescription className="line-clamp-2">
 										{project.shortDescription}
@@ -140,3 +143,4 @@ export function ProjectsPageContent() {
 		</div>
 	);
 }
+

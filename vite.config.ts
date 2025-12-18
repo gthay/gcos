@@ -75,6 +75,20 @@ const config = defineConfig({
           ],
         },
         {
+          pattern: '/team',
+          localized: [
+            ['en', '/team'],
+            ['de', '/de/team'],
+          ],
+        },
+        {
+          pattern: '/donate',
+          localized: [
+            ['en', '/donate'],
+            ['de', '/de/spenden'],
+          ],
+        },
+        {
           pattern: '/:path(.*)?',
           localized: [
             ['en', '/:path(.*)?'],

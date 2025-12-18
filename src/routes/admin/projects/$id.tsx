@@ -1,9 +1,10 @@
 import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { DashboardLayout } from "@/components/admin/DashboardLayout";
 import { getProject, createProject, updateProject } from "@/lib/server/projects";
+import { getTeamMembersByProject } from "@/lib/server/team-members";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +17,104 @@ import {
 } from "@/components/ui/char-count-indicator";
 import { MediaPicker } from "@/components/admin/MediaPicker";
 import { toast } from "sonner";
-import { Image as ImageIcon, X } from "lucide-react";
+import { Image as ImageIcon, X, GripVertical, Users } from "lucide-react";
+import { getMediaUrl } from "@/lib/media-utils";
+import {
+	DndContext,
+	closestCenter,
+	KeyboardSensor,
+	PointerSensor,
+	useSensor,
+	useSensors,
+	type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+	arrayMove,
+	SortableContext,
+	sortableKeyboardCoordinates,
+	useSortable,
+	verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import type { TeamMember } from "@/lib/schemas/team-member";
+import {
+	getCouncilDisplayTitle,
+	getConsultantDisplayTitle,
+	getCourseInstructorDisplayTitle,
+} from "@/lib/schemas/team-member";
+
+// Helper to get display roles for a team member (admin always uses English)
+function getMemberRoles(member: TeamMember): string[] {
+	const roles: string[] = [];
+	if (member.isCouncil) roles.push(getCouncilDisplayTitle(member, "en"));
+	if (member.isConsultant) roles.push(getConsultantDisplayTitle(member, "en"));
+	if (member.isCourseInstructor)
+		roles.push(getCourseInstructorDisplayTitle(member, "en"));
+	return roles;
+}
+
+// Sortable team member item component
+function SortableTeamMemberItem({
+	member,
+}: {
+	member: TeamMember & { _id: string };
+}) {
+	const {
+		attributes,
+		listeners,
+		setNodeRef,
+		transform,
+		transition,
+		isDragging,
+	} = useSortable({ id: member._id });
+
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+		opacity: isDragging ? 0.5 : 1,
+	};
+
+	const fullName = [member.firstName, member.lastName]
+		.filter(Boolean)
+		.join(" ");
+	const roles = getMemberRoles(member);
+
+	return (
+		<div
+			ref={setNodeRef}
+			style={style}
+			className="flex items-center gap-3 p-3 bg-background border rounded-lg"
+		>
+			<button
+				type="button"
+				className="cursor-grab active:cursor-grabbing touch-none"
+				{...attributes}
+				{...listeners}
+			>
+				<GripVertical className="h-5 w-5 text-muted-foreground" />
+			</button>
+			{member.picture ? (
+				<img
+					src={getMediaUrl(member.picture)}
+					alt={fullName}
+					className="h-10 w-10 rounded-full object-cover"
+				/>
+			) : (
+				<div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
+					<Users className="h-5 w-5 text-muted-foreground" />
+				</div>
+			)}
+			<div className="flex-1 min-w-0">
+				<p className="font-medium truncate">{fullName}</p>
+				{roles.length > 0 && (
+					<p className="text-sm text-muted-foreground truncate">
+						{roles.join(", ")}
+					</p>
+				)}
+			</div>
+		</div>
+	);
+}
 
 export const Route = createFileRoute("/admin/projects/$id")({
 	component: ProjectEditorPage,
@@ -34,6 +132,25 @@ function ProjectEditorPage() {
 		enabled: !isNew,
 		refetchOnWindowFocus: false,
 	});
+
+	// Fetch team members assigned to this project (only when editing)
+	const { data: projectTeamMembers = [] } = useQuery({
+		queryKey: ["teamMembersByProject", project?.slug],
+		queryFn: () => getTeamMembersByProject({ data: project!.slug }),
+		enabled: !isNew && !!project?.slug,
+		refetchOnWindowFocus: false,
+	});
+
+	// State for ordered team members (managed separately from form)
+	const [orderedMemberIds, setOrderedMemberIds] = useState<string[]>([]);
+
+	// DnD sensors
+	const sensors = useSensors(
+		useSensor(PointerSensor),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
+		})
+	);
 
 	const createMutation = useMutation({
 		mutationFn: (data: unknown) => createProject({ data }),
@@ -83,17 +200,28 @@ function ProjectEditorPage() {
 			websiteUrl: "",
 		},
 		onSubmit: async ({ value }) => {
+			// Include team member order when updating
+			const dataWithOrder = {
+				...value,
+				teamMemberOrder: orderedMemberIds,
+			};
+			
 			if (isNew) {
 				createMutation.mutate(value);
 			} else {
-				updateMutation.mutate({ id, data: value });
+				updateMutation.mutate({ id, data: dataWithOrder });
 			}
 		},
 	});
 
-	// Update form when project loads
+	// Track if form has been initialized to prevent overwriting user changes
+	const hasInitializedRef = useRef(false);
+	const hasInitializedMembersRef = useRef(false);
+
+	// Update form when project loads - ONLY ONCE
 	useEffect(() => {
-		if (project && !isNew) {
+		if (project && !isNew && !hasInitializedRef.current) {
+			hasInitializedRef.current = true;
 			form.setFieldValue("slug", project.slug);
 			form.setFieldValue("name", project.name);
 			form.setFieldValue("metaTitle", project.metaTitle);
@@ -110,6 +238,43 @@ function ProjectEditorPage() {
 			form.setFieldValue("websiteUrl", project.websiteUrl || "");
 		}
 	}, [project, isNew, form]);
+
+	// Initialize ordered member IDs when team members and project load
+	useEffect(() => {
+		if (projectTeamMembers.length > 0 && project && !hasInitializedMembersRef.current) {
+			hasInitializedMembersRef.current = true;
+			
+			// Use saved order if available, otherwise use all member IDs in fetch order
+			const savedOrder = project.teamMemberOrder || [];
+			const allMemberIds = projectTeamMembers.map((m) => m._id!);
+			
+			// Filter saved order to only include existing members, then add any new members
+			const orderedIds = [
+				...savedOrder.filter((id) => allMemberIds.includes(id)),
+				...allMemberIds.filter((id) => !savedOrder.includes(id)),
+			];
+			
+			setOrderedMemberIds(orderedIds);
+		}
+	}, [projectTeamMembers, project]);
+
+	// Handle drag end
+	const handleDragEnd = (event: DragEndEvent) => {
+		const { active, over } = event;
+		
+		if (over && active.id !== over.id) {
+			setOrderedMemberIds((items) => {
+				const oldIndex = items.indexOf(active.id as string);
+				const newIndex = items.indexOf(over.id as string);
+				return arrayMove(items, oldIndex, newIndex);
+			});
+		}
+	};
+
+	// Get sorted team members based on order
+	const sortedTeamMembers = orderedMemberIds
+		.map((id) => projectTeamMembers.find((m) => m._id === id))
+		.filter(Boolean) as typeof projectTeamMembers;
 
 	if (!isNew && isLoading) {
 		return (
@@ -349,7 +514,7 @@ function ProjectEditorPage() {
 												{field.state.value ? (
 													<div className="relative">
 														<img
-															src={field.state.value}
+															src={getMediaUrl(field.state.value)}
 															alt="Logo preview"
 															className="h-24 w-24 object-contain border-2 border-border rounded-lg p-2 bg-white"
 														/>
@@ -455,6 +620,57 @@ function ProjectEditorPage() {
 						</CardContent>
 					</Card>
 
+					{/* Team Members Order - Only show when editing */}
+					{!isNew && (
+						<Card>
+							<CardHeader>
+								<CardTitle className="flex items-center gap-2">
+									<Users className="h-5 w-5" />
+									Team Members
+								</CardTitle>
+							</CardHeader>
+							<CardContent>
+								{sortedTeamMembers.length > 0 ? (
+									<>
+										<p className="text-sm text-muted-foreground mb-4">
+											Drag and drop to reorder team members. The order will be used on the public project page.
+										</p>
+										<DndContext
+											sensors={sensors}
+											collisionDetection={closestCenter}
+											onDragEnd={handleDragEnd}
+										>
+											<SortableContext
+												items={orderedMemberIds}
+												strategy={verticalListSortingStrategy}
+											>
+												<div className="space-y-2">
+													{sortedTeamMembers.map((member) => (
+														<SortableTeamMemberItem
+															key={member._id}
+															member={member}
+														/>
+													))}
+												</div>
+											</SortableContext>
+										</DndContext>
+									</>
+								) : (
+									<p className="text-sm text-muted-foreground">
+										No team members assigned to this project yet.{" "}
+										<a
+											href="/admin/team-members"
+											className="text-primary hover:underline"
+										>
+											Manage team members
+										</a>{" "}
+										to assign them to this project.
+									</p>
+								)}
+							</CardContent>
+						</Card>
+					)}
+
 					<div className="flex gap-4">
 						<Button type="submit" disabled={isSubmitting}>
 							{isSubmitting
@@ -476,3 +692,4 @@ function ProjectEditorPage() {
 		</DashboardLayout>
 	);
 }
+

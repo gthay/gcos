@@ -13,17 +13,21 @@ import {
 } from "@/components/ui/dialog";
 import { Image as ImageIcon, Search, Loader2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getMediaUrl, extractMediaKey } from "@/lib/media-utils";
 
 interface MediaPickerProps {
 	value?: string;
-	onSelect: (url: string) => void;
+	onSelect: (key: string) => void;
 	disabled?: boolean;
 }
 
 export function MediaPicker({ value, onSelect, disabled }: MediaPickerProps) {
 	const [open, setOpen] = useState(false);
 	const [search, setSearch] = useState("");
-	const [selectedUrl, setSelectedUrl] = useState<string | null>(null);
+	const [selectedKey, setSelectedKey] = useState<string | null>(null);
+
+	// Extract key from current value (handles both old URLs and new keys)
+	const currentKey = extractMediaKey(value);
 
 	const { data: files = [], isLoading } = useQuery({
 		queryKey: ["media"],
@@ -41,16 +45,17 @@ export function MediaPicker({ value, onSelect, disabled }: MediaPickerProps) {
 	}, [files, search]);
 
 	const handleSelect = () => {
-		if (selectedUrl) {
-			onSelect(selectedUrl);
+		if (selectedKey) {
+			// Store only the key, not the full URL
+			onSelect(selectedKey);
 			setOpen(false);
-			setSelectedUrl(null);
+			setSelectedKey(null);
 			setSearch("");
 		}
 	};
 
-	const handleImageClick = (url: string) => {
-		setSelectedUrl(url === selectedUrl ? null : url);
+	const handleImageClick = (key: string) => {
+		setSelectedKey(key === selectedKey ? null : key);
 	};
 
 	return (
@@ -111,23 +116,23 @@ export function MediaPicker({ value, onSelect, disabled }: MediaPickerProps) {
 								<button
 									key={file.key}
 									type="button"
-									onClick={() => handleImageClick(file.url)}
+									onClick={() => handleImageClick(file.key)}
 									className={cn(
 										"relative aspect-square rounded-lg overflow-hidden border-2 transition-all hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-										selectedUrl === file.url
+										selectedKey === file.key
 											? "border-primary ring-2 ring-primary"
 											: "border-transparent hover:border-muted-foreground/50"
 									)}
 								>
 									<img
-										src={file.url}
+										src={getMediaUrl(file.key)}
 										alt={file.name}
 										className="h-full w-full object-cover"
 										onError={(e) => {
 											e.currentTarget.src = "/images/Profile-Picture-Placeholder.webp";
 										}}
 									/>
-									{selectedUrl === file.url && (
+									{selectedKey === file.key && (
 										<div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
 											<div className="bg-primary text-primary-foreground rounded-full p-1">
 												<Check className="h-4 w-4" />
@@ -154,7 +159,7 @@ export function MediaPicker({ value, onSelect, disabled }: MediaPickerProps) {
 							variant="outline"
 							onClick={() => {
 								setOpen(false);
-								setSelectedUrl(null);
+								setSelectedKey(null);
 								setSearch("");
 							}}
 						>
@@ -163,7 +168,7 @@ export function MediaPicker({ value, onSelect, disabled }: MediaPickerProps) {
 						<Button
 							type="button"
 							onClick={handleSelect}
-							disabled={!selectedUrl}
+							disabled={!selectedKey}
 						>
 							Select Image
 						</Button>
@@ -173,3 +178,4 @@ export function MediaPicker({ value, onSelect, disabled }: MediaPickerProps) {
 		</Dialog>
 	);
 }
+

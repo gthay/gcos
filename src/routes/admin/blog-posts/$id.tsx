@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { DashboardLayout } from "@/components/admin/DashboardLayout";
 import { getBlogPost, createBlogPost, updateBlogPost } from "@/lib/server/blog-posts";
 import { blogPostCreateSchema } from "@/lib/schemas/blog-post";
@@ -79,9 +79,13 @@ function BlogPostEditorPage() {
 		},
 	});
 
-	// Update form when post loads
+	// Track if form has been initialized to prevent overwriting user changes
+	const hasInitializedRef = useRef(false);
+
+	// Update form when post loads - ONLY ONCE
 	useEffect(() => {
-		if (post && !isNew) {
+		if (post && !isNew && !hasInitializedRef.current) {
+			hasInitializedRef.current = true;
 			form.setFieldValue("metaTitle", post.metaTitle);
 			form.setFieldValue("metaDescription", post.metaDescription);
 			form.setFieldValue("h1", post.h1);

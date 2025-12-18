@@ -4,3 +4,5 @@ import { ProjectDetailPageContent } from "../../projects/$slug";
 export const Route = createFileRoute("/de/projekte/$slug")({
 	component: ProjectDetailPageContent,
 });
+
+

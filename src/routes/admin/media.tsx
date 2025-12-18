@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { getMediaUrl } from "@/lib/media-utils";
 import {
 	Table,
 	TableBody,
@@ -668,9 +669,9 @@ function MediaPage() {
 										<TableCell>{getFileIcon(file.type)}</TableCell>
 										<TableCell className="font-medium">
 											<div className="flex items-center gap-2">
-												{file.type === "image" && file.url && (
+												{file.type === "image" && (
 													<img
-														src={file.url}
+														src={getMediaUrl(file.key)}
 														alt={file.name}
 														className="h-8 w-8 rounded object-cover border"
 														onError={(e) => {
@@ -731,7 +732,7 @@ function MediaPage() {
 												<Button
 													variant="ghost"
 													size="icon"
-													onClick={() => handleCopyUrl(file.url)}
+													onClick={() => handleCopyUrl(getMediaUrl(file.key))}
 													title="Copy URL"
 												>
 													<Copy className="h-4 w-4" />
@@ -742,7 +743,7 @@ function MediaPage() {
 													asChild
 													title="Open in new tab"
 												>
-													<a href={file.url} target="_blank" rel="noopener noreferrer">
+													<a href={getMediaUrl(file.key)} target="_blank" rel="noopener noreferrer">
 														<ExternalLink className="h-4 w-4" />
 													</a>
 												</Button>

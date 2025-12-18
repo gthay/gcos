@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const courseHostSchema = z.object({
-	image: z.string().url("Host image must be a valid URL").optional().or(z.literal("")),
+	image: z.string().optional().or(z.literal("")),
 	title: z.string().min(1, "Host title is required"),
 	description: z.string().optional().or(z.literal("")),
 });
@@ -23,7 +23,7 @@ export const courseCreateSchema = z.object({
 	metaDescription: z.string().min(1, "Meta description is required"),
 	shortDescription: z.string().min(1, "Short description is required"),
 	longDescription: z.string().min(1, "Long description is required"),
-	featuredImage: z.string().url("Featured image must be a valid URL").optional().or(z.literal("")),
+	featuredImage: z.string().optional().or(z.literal("")),
 	hosts: z.array(courseHostSchema).min(1, "At least one host is required"),
 	dateTime: z.string().min(1, "Date and time is required"),
 	location: z.string().min(1, "Location is required"),

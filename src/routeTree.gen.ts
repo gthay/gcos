@@ -9,8 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TeamRouteImport } from './routes/team'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as ImprintRouteImport } from './routes/imprint'
+import { Route as DonateRouteImport } from './routes/donate'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AboutRouteImport } from './routes/about'
@@ -19,6 +21,8 @@ import { Route as ProjectsIndexRouteImport } from './routes/projects/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as ProjectsSlugRouteImport } from './routes/projects/$slug'
 import { Route as DeUeberRouteImport } from './routes/de/ueber'
+import { Route as DeTeamRouteImport } from './routes/de/team'
+import { Route as DeSpendenRouteImport } from './routes/de/spenden'
 import { Route as DeKurseRouteImport } from './routes/de/kurse'
 import { Route as DeKontaktRouteImport } from './routes/de/kontakt'
 import { Route as AdminUsersRouteImport } from './routes/admin/users'
@@ -40,6 +44,11 @@ import { Route as AdminPagesSlugRouteImport } from './routes/admin/pages/$slug'
 import { Route as AdminCoursesIdRouteImport } from './routes/admin/courses/$id'
 import { Route as AdminBlogPostsIdRouteImport } from './routes/admin/blog-posts/$id'
 
+const TeamRoute = TeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
   id: '/privacy-policy',
   path: '/privacy-policy',
@@ -48,6 +57,11 @@ const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
 const ImprintRoute = ImprintRouteImport.update({
   id: '/imprint',
   path: '/imprint',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DonateRoute = DonateRouteImport.update({
+  id: '/donate',
+  path: '/donate',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesRoute = CoursesRouteImport.update({
@@ -88,6 +102,16 @@ const ProjectsSlugRoute = ProjectsSlugRouteImport.update({
 const DeUeberRoute = DeUeberRouteImport.update({
   id: '/de/ueber',
   path: '/de/ueber',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeTeamRoute = DeTeamRouteImport.update({
+  id: '/de/team',
+  path: '/de/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DeSpendenRoute = DeSpendenRouteImport.update({
+  id: '/de/spenden',
+  path: '/de/spenden',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DeKurseRoute = DeKurseRouteImport.update({
@@ -196,14 +220,18 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
+  '/donate': typeof DonateRoute
   '/imprint': typeof ImprintRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/team': typeof TeamRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/de/kontakt': typeof DeKontaktRoute
   '/de/kurse': typeof DeKurseRoute
+  '/de/spenden': typeof DeSpendenRoute
+  '/de/team': typeof DeTeamRoute
   '/de/ueber': typeof DeUeberRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -228,14 +256,18 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
+  '/donate': typeof DonateRoute
   '/imprint': typeof ImprintRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/team': typeof TeamRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/de/kontakt': typeof DeKontaktRoute
   '/de/kurse': typeof DeKurseRoute
+  '/de/spenden': typeof DeSpendenRoute
+  '/de/team': typeof DeTeamRoute
   '/de/ueber': typeof DeUeberRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -261,14 +293,18 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRoute
+  '/donate': typeof DonateRoute
   '/imprint': typeof ImprintRoute
   '/privacy-policy': typeof PrivacyPolicyRoute
+  '/team': typeof TeamRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/media': typeof AdminMediaRoute
   '/admin/settings': typeof AdminSettingsRoute
   '/admin/users': typeof AdminUsersRoute
   '/de/kontakt': typeof DeKontaktRoute
   '/de/kurse': typeof DeKurseRoute
+  '/de/spenden': typeof DeSpendenRoute
+  '/de/team': typeof DeTeamRoute
   '/de/ueber': typeof DeUeberRoute
   '/projects/$slug': typeof ProjectsSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -295,14 +331,18 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/courses'
+    | '/donate'
     | '/imprint'
     | '/privacy-policy'
+    | '/team'
     | '/admin/login'
     | '/admin/media'
     | '/admin/settings'
     | '/admin/users'
     | '/de/kontakt'
     | '/de/kurse'
+    | '/de/spenden'
+    | '/de/team'
     | '/de/ueber'
     | '/projects/$slug'
     | '/admin'
@@ -327,14 +367,18 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/courses'
+    | '/donate'
     | '/imprint'
     | '/privacy-policy'
+    | '/team'
     | '/admin/login'
     | '/admin/media'
     | '/admin/settings'
     | '/admin/users'
     | '/de/kontakt'
     | '/de/kurse'
+    | '/de/spenden'
+    | '/de/team'
     | '/de/ueber'
     | '/projects/$slug'
     | '/admin'
@@ -359,14 +403,18 @@ export interface FileRouteTypes {
     | '/about'
     | '/contact'
     | '/courses'
+    | '/donate'
     | '/imprint'
     | '/privacy-policy'
+    | '/team'
     | '/admin/login'
     | '/admin/media'
     | '/admin/settings'
     | '/admin/users'
     | '/de/kontakt'
     | '/de/kurse'
+    | '/de/spenden'
+    | '/de/team'
     | '/de/ueber'
     | '/projects/$slug'
     | '/admin/'
@@ -392,14 +440,18 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
   CoursesRoute: typeof CoursesRoute
+  DonateRoute: typeof DonateRoute
   ImprintRoute: typeof ImprintRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  TeamRoute: typeof TeamRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminMediaRoute: typeof AdminMediaRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
   AdminUsersRoute: typeof AdminUsersRoute
   DeKontaktRoute: typeof DeKontaktRoute
   DeKurseRoute: typeof DeKurseRoute
+  DeSpendenRoute: typeof DeSpendenRoute
+  DeTeamRoute: typeof DeTeamRoute
   DeUeberRoute: typeof DeUeberRoute
   ProjectsSlugRoute: typeof ProjectsSlugRoute
   AdminIndexRoute: typeof AdminIndexRoute
@@ -422,6 +474,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/team': {
+      id: '/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof TeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/privacy-policy': {
       id: '/privacy-policy'
       path: '/privacy-policy'
@@ -434,6 +493,13 @@ declare module '@tanstack/react-router' {
       path: '/imprint'
       fullPath: '/imprint'
       preLoaderRoute: typeof ImprintRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/donate': {
+      id: '/donate'
+      path: '/donate'
+      fullPath: '/donate'
+      preLoaderRoute: typeof DonateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/courses': {
@@ -490,6 +556,20 @@ declare module '@tanstack/react-router' {
       path: '/de/ueber'
       fullPath: '/de/ueber'
       preLoaderRoute: typeof DeUeberRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/de/team': {
+      id: '/de/team'
+      path: '/de/team'
+      fullPath: '/de/team'
+      preLoaderRoute: typeof DeTeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/de/spenden': {
+      id: '/de/spenden'
+      path: '/de/spenden'
+      fullPath: '/de/spenden'
+      preLoaderRoute: typeof DeSpendenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/de/kurse': {
@@ -640,14 +720,18 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   ContactRoute: ContactRoute,
   CoursesRoute: CoursesRoute,
+  DonateRoute: DonateRoute,
   ImprintRoute: ImprintRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
+  TeamRoute: TeamRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminMediaRoute: AdminMediaRoute,
   AdminSettingsRoute: AdminSettingsRoute,
   AdminUsersRoute: AdminUsersRoute,
   DeKontaktRoute: DeKontaktRoute,
   DeKurseRoute: DeKurseRoute,
+  DeSpendenRoute: DeSpendenRoute,
+  DeTeamRoute: DeTeamRoute,
   DeUeberRoute: DeUeberRoute,
   ProjectsSlugRoute: ProjectsSlugRoute,
   AdminIndexRoute: AdminIndexRoute,

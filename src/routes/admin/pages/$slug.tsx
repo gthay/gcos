@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router";
 import { useForm } from "@tanstack/react-form";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { DashboardLayout } from "@/components/admin/DashboardLayout";
 import { getPage, updatePage } from "@/lib/server/pages";
 import { PREDEFINED_PAGES } from "@/lib/schemas/page";
@@ -61,9 +61,13 @@ function PageEditorPage() {
 		},
 	});
 
-	// Update form when page loads
+	// Track if form has been initialized to prevent overwriting user changes
+	const hasInitializedRef = useRef(false);
+
+	// Update form when page loads - ONLY ONCE
 	useEffect(() => {
-		if (page) {
+		if (page && !hasInitializedRef.current) {
+			hasInitializedRef.current = true;
 			form.setFieldValue("titleEn", page.titleEn || "");
 			form.setFieldValue("titleDe", page.titleDe || "");
 			form.setFieldValue("contentEn", page.contentEn || "");
@@ -210,3 +214,4 @@ function PageEditorPage() {
 		</DashboardLayout>
 	);
 }
+

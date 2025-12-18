@@ -22,7 +22,7 @@ export const projectCreateSchema = z.object({
 	shortDescriptionDe: z.string().optional().or(z.literal("")),
 	longDescriptionDe: z.string().optional().or(z.literal("")),
 	// Other fields
-	logo: z.string().url("Logo must be a valid URL").optional().or(z.literal("")),
+	logo: z.string().optional().or(z.literal("")),
 	githubUrl: z
 		.string()
 		.url("GitHub URL must be a valid URL")
@@ -38,6 +38,8 @@ export const projectCreateSchema = z.object({
 		.url("Website URL must be a valid URL")
 		.optional()
 		.or(z.literal("")),
+	// Ordered list of team member IDs for this project
+	teamMemberOrder: z.array(z.string()).optional(),
 });
 
 export type ProjectCreate = z.infer<typeof projectCreateSchema>;
@@ -62,6 +64,9 @@ export type Project = {
 	githubUrl?: string;
 	docsUrl?: string;
 	websiteUrl?: string;
+	// Ordered list of team member IDs for this project
+	teamMemberOrder?: string[];
 	createdAt?: Date;
 	updatedAt?: Date;
 };
+

@@ -5,11 +5,11 @@ import { authClient } from "@/lib/auth-client";
 import { toast } from "sonner";
 import {
 	LayoutDashboard,
-	FileText,
+	// FileText, // TODO: Re-enable when blog posts section is ready
 	Users,
-	Settings,
+	// Settings, // TODO: Re-enable when settings page is ready
 	LogOut,
-	GraduationCap,
+	// GraduationCap, // TODO: Re-enable when courses section is ready
 	ImageIcon,
 	UserCog,
 	Shield,
@@ -51,19 +51,21 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 			label: "Projects",
 			href: "/admin/projects",
 		},
-		{
-			icon: GraduationCap,
-			label: "Courses",
-			href: "/admin/courses",
-		},
-		{
-			icon: FileText,
-			label: "Blog Posts",
-			href: "/admin/blog-posts",
-		},
+		// TODO: Re-enable when courses section is ready
+		// {
+		// 	icon: GraduationCap,
+		// 	label: "Courses",
+		// 	href: "/admin/courses",
+		// },
+		// TODO: Re-enable when blog posts section is ready
+		// {
+		// 	icon: FileText,
+		// 	label: "Blog Posts",
+		// 	href: "/admin/blog-posts",
+		// },
 		{
 			icon: Users,
-			label: "Team Members",
+			label: "Team",
 			href: "/admin/team-members",
 		},
 		{
@@ -86,11 +88,12 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 					},
 				]
 			: []),
-		{
-			icon: Settings,
-			label: "Settings",
-			href: "/admin/settings",
-		},
+		// TODO: Re-enable when settings page is ready
+		// {
+		// 	icon: Settings,
+		// 	label: "Settings",
+		// 	href: "/admin/settings",
+		// },
 	];
 
 	return (

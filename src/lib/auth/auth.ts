@@ -40,7 +40,7 @@ export async function getAuth() {
 			rateLimit: {
 				enabled: true,
 				window: 60, // 60 seconds window
-				max: 10, // Max 10 requests per window for general endpoints
+				max: 100, // Max 100 requests per window for general endpoints (increased for dev)
 				customRules: {
 					// Stricter limits for login attempts
 					"/sign-in/email": {
@@ -55,6 +55,8 @@ export async function getAuth() {
 						window: 300, // 5 minutes
 						max: 3, // Only 3 password reset requests per 5 minutes
 					},
+					// Exclude session checks from rate limiting - read-only, called frequently
+					"/get-session": false,
 					// Exclude admin endpoints from rate limiting - they're already protected by authentication
 					"/admin/*": false, // All admin endpoints are excluded
 				},

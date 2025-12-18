@@ -1,6 +1,6 @@
 import { getDb } from "../db";
 import type { BlogPost } from "../schemas/blog-post";
-import type { TeamMember } from "../schemas/team-member";
+import type { TeamMember, TeamPageConfig } from "../schemas/team-member";
 import type { Course } from "../schemas/course";
 import type { MediaMetadata } from "../schemas/media";
 import type { Project } from "../schemas/project";
@@ -14,6 +14,11 @@ export async function getBlogPostsCollection() {
 export async function getTeamMembersCollection() {
 	const db = await getDb();
 	return db.collection<TeamMember>("teamMembers");
+}
+
+export async function getTeamPageConfigCollection() {
+	const db = await getDb();
+	return db.collection<TeamPageConfig & { _id: string }>("teamPageConfig");
 }
 
 export async function getCoursesCollection() {
