@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
 	Accordion,
@@ -25,10 +26,19 @@ import {
 	Users2,
 } from "lucide-react";
 import * as m from "@/paraglide/messages";
+import { getProjects } from "@/lib/server/projects";
+import { getMediaUrl } from "@/lib/media-utils";
 
 export const Route = createFileRoute("/")({ component: HomePage });
 
 function HomePage() {
+	const { data: projects = [] } = useQuery({
+		queryKey: ["featured-projects"],
+		queryFn: () => getProjects(),
+	});
+
+	// Show max 4 projects on homepage
+	const featuredProjects = projects.slice(0, 4);
 	return (
 		<div className="flex flex-col">
 			{/* Hero Section */}
@@ -136,40 +146,51 @@ function HomePage() {
 					<h2 className="mb-8 text-center text-3xl font-bold tracking-tight sm:text-4xl">
 						{m.projects_title()}
 					</h2>
-					<div className="grid gap-6 md:grid-cols-3">
-						<Card>
-							<CardHeader>
-								<CardTitle>{m.projects_sktime_name()}</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<CardDescription>
-									{m.projects_sktime_description()}
-								</CardDescription>
-							</CardContent>
-						</Card>
-
-						<Card>
-							<CardHeader>
-								<CardTitle>{m.projects_featureEngine_name()}</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<CardDescription>
-									{m.projects_featureEngine_description()}
-								</CardDescription>
-							</CardContent>
-						</Card>
-
-						<Card>
-							<CardHeader>
-								<CardTitle>{m.projects_pytorchForecasting_name()}</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<CardDescription>
-									{m.projects_pytorchForecasting_description()}
-								</CardDescription>
-							</CardContent>
-						</Card>
-					</div>
+					{featuredProjects.length > 0 ? (
+						<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+							{featuredProjects.map((project) => (
+								<Link
+									key={project._id}
+									to={`/projects/${project.slug}`}
+									className="block"
+								>
+									<Card className="h-full hover:shadow-lg transition-shadow">
+										<CardHeader>
+											{project.logo ? (
+												<div className="h-12 mb-2 flex items-center">
+													<img
+														src={getMediaUrl(project.logo)}
+														alt={`${project.name} logo`}
+														className="h-full max-w-[140px] object-contain object-left"
+													/>
+												</div>
+											) : null}
+											<CardTitle className="text-lg">{project.name}</CardTitle>
+										</CardHeader>
+										<CardContent>
+											<CardDescription className="line-clamp-2">
+												{project.shortDescription}
+											</CardDescription>
+										</CardContent>
+									</Card>
+								</Link>
+							))}
+						</div>
+					) : (
+						<div className="grid gap-6 md:grid-cols-3">
+							{[1, 2, 3].map((i) => (
+								<Card key={i} className="animate-pulse">
+									<CardHeader>
+										<div className="h-6 w-32 bg-muted rounded" />
+									</CardHeader>
+									<CardContent>
+										<div className="h-4 w-full bg-muted rounded" />
+										<div className="h-4 w-3/4 bg-muted rounded mt-2" />
+									</CardContent>
+								</Card>
+							))}
+						</div>
+					)}
 				</div>
 			</section>
 
@@ -251,7 +272,7 @@ function HomePage() {
 						<Card className="text-center">
 							<CardHeader>
 								<TrendingUp className="mx-auto mb-4 h-12 w-12 text-primary" />
-								<CardTitle className="text-4xl font-bold">50+</CardTitle>
+								<CardTitle className="text-4xl font-bold">11+</CardTitle>
 							</CardHeader>
 							<CardContent>
 								<CardDescription className="text-lg">
@@ -263,7 +284,7 @@ function HomePage() {
 						<Card className="text-center">
 							<CardHeader>
 								<Users className="mx-auto mb-4 h-12 w-12 text-primary" />
-								<CardTitle className="text-4xl font-bold">200+</CardTitle>
+								<CardTitle className="text-4xl font-bold">12+</CardTitle>
 							</CardHeader>
 							<CardContent>
 								<CardDescription className="text-lg">
@@ -275,7 +296,7 @@ function HomePage() {
 						<Card className="text-center">
 							<CardHeader>
 								<Building2 className="mx-auto mb-4 h-12 w-12 text-primary" />
-								<CardTitle className="text-4xl font-bold">30+</CardTitle>
+								<CardTitle className="text-4xl font-bold">27+</CardTitle>
 							</CardHeader>
 							<CardContent>
 								<CardDescription className="text-lg">
@@ -304,9 +325,6 @@ function HomePage() {
 								<CardDescription>
 									{m.services_mentoring_description()}
 								</CardDescription>
-								<Button className="mt-4" variant="outline" asChild>
-									<a href="#">Learn More</a>
-								</Button>
 							</CardContent>
 						</Card>
 
@@ -318,9 +336,6 @@ function HomePage() {
 								<CardDescription>
 									{m.services_consulting_description()}
 								</CardDescription>
-								<Button className="mt-4" variant="outline" asChild>
-									<a href="#">Learn More</a>
-								</Button>
 							</CardContent>
 						</Card>
 
@@ -332,107 +347,6 @@ function HomePage() {
 								<CardDescription>
 									{m.services_projectSupport_description()}
 								</CardDescription>
-								<Button className="mt-4" variant="outline" asChild>
-									<a href="#">Learn More</a>
-								</Button>
-							</CardContent>
-						</Card>
-					</div>
-				</div>
-			</section>
-
-			<Separator />
-
-			{/* Testimonials */}
-			<section className="container py-16 md:py-24">
-				<div className="mx-auto max-w-[64rem]">
-					<h2 className="mb-8 text-center text-3xl font-bold tracking-tight sm:text-4xl">
-						{m.testimonials_title()}
-					</h2>
-					<div className="grid gap-6 md:grid-cols-3">
-						<Card>
-							<CardContent className="pt-6">
-								<p className="mb-4 italic text-muted-foreground">
-									"GC.OS helped us transform our AI strategy with open source
-									solutions. The consulting was invaluable."
-								</p>
-								<p className="font-semibold">— Organization Leader</p>
-							</CardContent>
-						</Card>
-
-						<Card>
-							<CardContent className="pt-6">
-								<p className="mb-4 italic text-muted-foreground">
-									"The mentoring program accelerated my career in AI. I'm now
-									working on cutting-edge open source projects."
-								</p>
-								<p className="font-semibold">— AI Professional</p>
-							</CardContent>
-						</Card>
-
-						<Card>
-							<CardContent className="pt-6">
-								<p className="mb-4 italic text-muted-foreground">
-									"The fellowship support enabled us to build and scale our open
-									source AI project. Thank you GC.OS!"
-								</p>
-								<p className="font-semibold">— Open Source Developer</p>
-							</CardContent>
-						</Card>
-					</div>
-				</div>
-			</section>
-
-			<Separator />
-
-			{/* Latest News / Blog Preview */}
-			<section className="container py-16 md:py-24">
-				<div className="mx-auto max-w-[64rem]">
-					<h2 className="mb-8 text-center text-3xl font-bold tracking-tight sm:text-4xl">
-						{m.news_title()}
-					</h2>
-					<div className="grid gap-6 md:grid-cols-3">
-						<Card>
-							<CardHeader>
-								<CardTitle>Latest AI Developments</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<CardDescription>
-									Exploring the latest trends in open source AI and their impact
-									on society.
-								</CardDescription>
-								<Button className="mt-4" variant="link" asChild>
-									<a href="#">{m.news_readMore()} →</a>
-								</Button>
-							</CardContent>
-						</Card>
-
-						<Card>
-							<CardHeader>
-								<CardTitle>Community Spotlight</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<CardDescription>
-									Highlighting the amazing work of our community members and
-									their contributions.
-								</CardDescription>
-								<Button className="mt-4" variant="link" asChild>
-									<a href="#">{m.news_readMore()} →</a>
-								</Button>
-							</CardContent>
-						</Card>
-
-						<Card>
-							<CardHeader>
-								<CardTitle>Upcoming Events</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<CardDescription>
-									Join us for workshops, conferences, and community meetups.
-								</CardDescription>
-								<Button className="mt-4" variant="link" asChild>
-									<a href="#">{m.news_readMore()} →</a>
-								</Button>
 							</CardContent>
 						</Card>
 					</div>
