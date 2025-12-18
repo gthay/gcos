@@ -29,7 +29,7 @@ const translations = {
 		legal: "Rechtliches",
 		imprint: "Impressum",
 		privacy: "Datenschutz",
-		nonProfit: "Gemeinnütziger Verein",
+		nonProfit: "Gemeinnützige Organisation",
 	},
 };
 
