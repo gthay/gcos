@@ -193,3 +193,4 @@ async function migrate() {
 migrate().then(() => {
 	process.exit(0);
 });
+
