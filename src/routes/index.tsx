@@ -18,6 +18,7 @@ import { Separator } from "@/components/ui/separator";
 import {
 	Building2,
 	Code,
+	Download,
 	GitBranch,
 	Heart,
 	Target,
@@ -25,6 +26,7 @@ import {
 	Users,
 	Users2,
 } from "lucide-react";
+import { motion } from "framer-motion";
 import * as m from "@/paraglide/messages";
 import { getProjects } from "@/lib/server/projects";
 import { getMediaUrl } from "@/lib/media-utils";
@@ -37,8 +39,9 @@ function HomePage() {
 		queryFn: () => getProjects(),
 	});
 
-	// Show max 4 projects on homepage
-	const featuredProjects = projects.slice(0, 4);
+	// Split projects into featured and non-featured
+	const featuredProjects = projects.filter((p) => p.featured);
+	const otherProjects = projects.filter((p) => !p.featured);
 	return (
 		<div className="flex flex-col">
 			{/* Hero Section */}
@@ -79,7 +82,11 @@ function HomePage() {
 					</div>
 
 					<h1 className="text-4xl font-bold tracking-tight sm:text-6xl md:text-7xl">
-						{m.hero_headline()}
+						{m.hero_headline_part1()}
+						<br className="hidden md:block" />{" "}
+						{m.hero_headline_part2()}
+						<br className="hidden md:block" />{" "}
+						{m.hero_headline_part3()}
 					</h1>
 					<p className="max-w-[42rem] text-lg text-muted-foreground sm:text-xl">
 						{m.hero_subheadline()}
@@ -100,41 +107,92 @@ function HomePage() {
 			{/* Target Audience Teasers */}
 			<section className="container py-16 md:py-24">
 				<div className="grid gap-8 md:grid-cols-3">
-					<Card>
-						<CardHeader>
-							<Building2 className="mb-4 h-10 w-10 text-primary" />
-							<CardTitle>{m.targetAudience_organizations_title()}</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<CardDescription className="text-base">
-								{m.targetAudience_organizations_description()}
-							</CardDescription>
-						</CardContent>
-					</Card>
+					<motion.div
+						whileHover={{ scale: 1.02 }}
+						transition={{ type: "spring", stiffness: 300 }}
+					>
+						<Card className="h-full">
+							<CardHeader className="flex flex-row items-center gap-4">
+								<Building2 className="h-12 w-12 text-primary shrink-0" />
+								<CardTitle className="text-xl">
+									{m.targetAudience_organizations_title()}
+								</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<CardDescription className="text-base mb-4">
+									{m.targetAudience_organizations_description()}
+								</CardDescription>
+								<ul className="text-sm text-muted-foreground space-y-2">
+									<li className="flex items-start gap-2">
+										<span className="text-primary">•</span>
+										{m.services_consulting_title()}
+									</li>
+									<li className="flex items-start gap-2">
+										<span className="text-primary">•</span>
+										{m.services_consulting_description()}
+									</li>
+								</ul>
+							</CardContent>
+						</Card>
+					</motion.div>
 
-					<Card>
-						<CardHeader>
-							<Users className="mb-4 h-10 w-10 text-primary" />
-							<CardTitle>{m.targetAudience_individuals_title()}</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<CardDescription className="text-base">
-								{m.targetAudience_individuals_description()}
-							</CardDescription>
-						</CardContent>
-					</Card>
+					<motion.div
+						whileHover={{ scale: 1.02 }}
+						transition={{ type: "spring", stiffness: 300 }}
+					>
+						<Card className="h-full">
+							<CardHeader className="flex flex-row items-center gap-4">
+								<Users className="h-12 w-12 text-primary shrink-0" />
+								<CardTitle className="text-xl">
+									{m.targetAudience_individuals_title()}
+								</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<CardDescription className="text-base mb-4">
+									{m.targetAudience_individuals_description()}
+								</CardDescription>
+								<ul className="text-sm text-muted-foreground space-y-2">
+									<li className="flex items-start gap-2">
+										<span className="text-primary">•</span>
+										{m.services_mentoring_title()}
+									</li>
+									<li className="flex items-start gap-2">
+										<span className="text-primary">•</span>
+										{m.services_mentoring_description()}
+									</li>
+								</ul>
+							</CardContent>
+						</Card>
+					</motion.div>
 
-					<Card>
-						<CardHeader>
-							<Code className="mb-4 h-10 w-10 text-primary" />
-							<CardTitle>{m.targetAudience_developers_title()}</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<CardDescription className="text-base">
-								{m.targetAudience_developers_description()}
-							</CardDescription>
-						</CardContent>
-					</Card>
+					<motion.div
+						whileHover={{ scale: 1.02 }}
+						transition={{ type: "spring", stiffness: 300 }}
+					>
+						<Card className="h-full">
+							<CardHeader className="flex flex-row items-center gap-4">
+								<Code className="h-12 w-12 text-primary shrink-0" />
+								<CardTitle className="text-xl">
+									{m.targetAudience_developers_title()}
+								</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<CardDescription className="text-base mb-4">
+									{m.targetAudience_developers_description()}
+								</CardDescription>
+								<ul className="text-sm text-muted-foreground space-y-2">
+									<li className="flex items-start gap-2">
+										<span className="text-primary">•</span>
+										{m.services_projectSupport_title()}
+									</li>
+									<li className="flex items-start gap-2">
+										<span className="text-primary">•</span>
+										{m.services_projectSupport_description()}
+									</li>
+								</ul>
+							</CardContent>
+						</Card>
+					</motion.div>
 				</div>
 			</section>
 
@@ -146,37 +204,85 @@ function HomePage() {
 					<h2 className="mb-8 text-center text-3xl font-bold tracking-tight sm:text-4xl">
 						{m.projects_title()}
 					</h2>
-					{featuredProjects.length > 0 ? (
-						<div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+
+					{/* Featured Projects - Large Cards (2 columns) */}
+					{featuredProjects.length > 0 && (
+						<div className="grid gap-6 md:grid-cols-2 mb-8">
 							{featuredProjects.map((project) => (
-								<Link
+								<motion.div
 									key={project._id}
-									to={`/projects/${project.slug}`}
-									className="block"
+									whileHover={{ scale: 1.02 }}
+									transition={{ type: "spring", stiffness: 300 }}
 								>
-									<Card className="h-full hover:shadow-lg transition-shadow">
-										<CardHeader>
-											{project.logo ? (
-												<div className="h-12 mb-2 flex items-center">
-													<img
-														src={getMediaUrl(project.logo)}
-														alt={`${project.name} logo`}
-														className="h-full max-w-[140px] object-contain object-left"
-													/>
-												</div>
-											) : null}
-											<CardTitle className="text-lg">{project.name}</CardTitle>
-										</CardHeader>
-										<CardContent>
-											<CardDescription className="line-clamp-2">
-												{project.shortDescription}
-											</CardDescription>
-										</CardContent>
-									</Card>
-								</Link>
+									<Link to={`/projects/${project.slug}`} className="block">
+										<Card className="h-full">
+											<CardHeader>
+												{project.logo ? (
+													<div className="bg-white rounded-lg p-4 mb-4 flex items-center justify-center">
+														<img
+															src={getMediaUrl(project.logo)}
+															alt={`${project.name} logo`}
+															className="h-16 max-w-full object-contain"
+														/>
+													</div>
+												) : (
+													<CardTitle className="text-xl">
+														{project.name}
+													</CardTitle>
+												)}
+											</CardHeader>
+											<CardContent>
+												<CardDescription className="text-base">
+													{project.shortDescription}
+												</CardDescription>
+											</CardContent>
+										</Card>
+									</Link>
+								</motion.div>
 							))}
 						</div>
-					) : (
+					)}
+
+					{/* Other Projects - Small Cards (4 columns) */}
+					{otherProjects.length > 0 && (
+						<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+							{otherProjects.map((project) => (
+								<motion.div
+									key={project._id}
+									whileHover={{ scale: 1.02 }}
+									transition={{ type: "spring", stiffness: 300 }}
+								>
+									<Link to={`/projects/${project.slug}`} className="block">
+										<Card className="h-full">
+											<CardHeader className="pb-2">
+												{project.logo ? (
+													<div className="bg-white rounded-md p-2 mb-2 flex items-center justify-center">
+														<img
+															src={getMediaUrl(project.logo)}
+															alt={`${project.name} logo`}
+															className="h-10 max-w-full object-contain"
+														/>
+													</div>
+												) : (
+													<CardTitle className="text-base">
+														{project.name}
+													</CardTitle>
+												)}
+											</CardHeader>
+											<CardContent className="pt-0">
+												<CardDescription className="text-sm line-clamp-2">
+													{project.shortDescription}
+												</CardDescription>
+											</CardContent>
+										</Card>
+									</Link>
+								</motion.div>
+							))}
+						</div>
+					)}
+
+					{/* Loading skeleton when no projects */}
+					{projects.length === 0 && (
 						<div className="grid gap-6 md:grid-cols-3">
 							{[1, 2, 3].map((i) => (
 								<Card key={i} className="animate-pulse">
@@ -263,20 +369,32 @@ function HomePage() {
 			<Separator />
 
 			{/* Impact / Numbers */}
-			<section className="container py-16 md:py-24">
+			<section className="container py-12 md:py-16">
 				<div className="mx-auto max-w-[64rem]">
-					<h2 className="mb-8 text-center text-3xl font-bold tracking-tight sm:text-4xl">
+					<h2 className="mb-6 text-center text-3xl font-bold tracking-tight sm:text-4xl">
 						{m.impact_title()}
 					</h2>
 					<div className="grid gap-6 md:grid-cols-3">
 						<Card className="text-center">
 							<CardHeader>
-								<TrendingUp className="mx-auto mb-4 h-12 w-12 text-primary" />
-								<CardTitle className="text-4xl font-bold">11+</CardTitle>
+								<Download className="mx-auto mb-4 h-12 w-12 text-primary" />
+								<CardTitle className="text-4xl font-bold">150K+</CardTitle>
 							</CardHeader>
 							<CardContent>
 								<CardDescription className="text-lg">
-									{m.impact_projectsSupported()}
+									{m.impact_monthlyDownloads()}
+								</CardDescription>
+							</CardContent>
+						</Card>
+
+						<Card className="text-center">
+							<CardHeader>
+								<TrendingUp className="mx-auto mb-4 h-12 w-12 text-primary" />
+								<CardTitle className="text-4xl font-bold">2.5M+</CardTitle>
+							</CardHeader>
+							<CardContent>
+								<CardDescription className="text-lg">
+									{m.impact_totalDownloads()}
 								</CardDescription>
 							</CardContent>
 						</Card>
@@ -284,23 +402,11 @@ function HomePage() {
 						<Card className="text-center">
 							<CardHeader>
 								<Users className="mx-auto mb-4 h-12 w-12 text-primary" />
-								<CardTitle className="text-4xl font-bold">12+</CardTitle>
+								<CardTitle className="text-4xl font-bold">85+</CardTitle>
 							</CardHeader>
 							<CardContent>
 								<CardDescription className="text-lg">
-									{m.impact_mentees()}
-								</CardDescription>
-							</CardContent>
-						</Card>
-
-						<Card className="text-center">
-							<CardHeader>
-								<Building2 className="mx-auto mb-4 h-12 w-12 text-primary" />
-								<CardTitle className="text-4xl font-bold">27+</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<CardDescription className="text-lg">
-									{m.impact_organizations()}
+									{m.impact_contributors()}
 								</CardDescription>
 							</CardContent>
 						</Card>
@@ -310,45 +416,26 @@ function HomePage() {
 
 			<Separator />
 
-			{/* Services Overview */}
-			<section className="container py-16 md:py-24">
+			{/* Used By / Testimonials */}
+			<section className="container py-12 md:py-16">
 				<div className="mx-auto max-w-[64rem]">
 					<h2 className="mb-8 text-center text-3xl font-bold tracking-tight sm:text-4xl">
-						{m.services_title()}
+						{m.usedBy_title()}
 					</h2>
-					<div className="grid gap-6 md:grid-cols-3">
-						<Card>
-							<CardHeader>
-								<CardTitle>{m.services_mentoring_title()}</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<CardDescription>
-									{m.services_mentoring_description()}
-								</CardDescription>
-							</CardContent>
-						</Card>
-
-						<Card>
-							<CardHeader>
-								<CardTitle>{m.services_consulting_title()}</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<CardDescription>
-									{m.services_consulting_description()}
-								</CardDescription>
-							</CardContent>
-						</Card>
-
-						<Card>
-							<CardHeader>
-								<CardTitle>{m.services_projectSupport_title()}</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<CardDescription>
-									{m.services_projectSupport_description()}
-								</CardDescription>
-							</CardContent>
-						</Card>
+					<div className="flex flex-wrap items-center justify-center gap-8 md:gap-12">
+						{/* Platzhalter für Firmenlogos - später durch echte Logos ersetzen */}
+						<div className="bg-white rounded-lg p-4 h-16 w-32 flex items-center justify-center">
+							<span className="text-muted-foreground text-sm">Logo 1</span>
+						</div>
+						<div className="bg-white rounded-lg p-4 h-16 w-32 flex items-center justify-center">
+							<span className="text-muted-foreground text-sm">Logo 2</span>
+						</div>
+						<div className="bg-white rounded-lg p-4 h-16 w-32 flex items-center justify-center">
+							<span className="text-muted-foreground text-sm">Logo 3</span>
+						</div>
+						<div className="bg-white rounded-lg p-4 h-16 w-32 flex items-center justify-center">
+							<span className="text-muted-foreground text-sm">Logo 4</span>
+						</div>
 					</div>
 				</div>
 			</section>

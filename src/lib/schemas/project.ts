@@ -40,6 +40,8 @@ export const projectCreateSchema = z.object({
 		.or(z.literal("")),
 	// Ordered list of team member IDs for this project
 	teamMemberOrder: z.array(z.string()).optional(),
+	// Whether this project should be featured prominently
+	featured: z.boolean().optional().default(false),
 });
 
 export type ProjectCreate = z.infer<typeof projectCreateSchema>;
@@ -66,6 +68,8 @@ export type Project = {
 	websiteUrl?: string;
 	// Ordered list of team member IDs for this project
 	teamMemberOrder?: string[];
+	// Whether this project should be featured prominently
+	featured?: boolean;
 	createdAt?: Date;
 	updatedAt?: Date;
 };

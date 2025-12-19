@@ -73,13 +73,15 @@ export function ProjectsPageContent() {
 								className="flex h-full flex-col overflow-hidden hover:shadow-lg transition-shadow"
 							>
 								<CardHeader>
-									<div className="h-16 flex items-center">
+									<div className="h-20 flex items-center">
 										{project.logo ? (
-											<img
-												src={getMediaUrl(project.logo)}
-												alt={`${project.name} logo`}
-												className="h-full max-w-[180px] object-contain object-left"
-											/>
+											<div className="bg-white rounded-lg p-3 h-full flex items-center">
+												<img
+													src={getMediaUrl(project.logo)}
+													alt={`${project.name} logo`}
+													className="h-full max-w-[180px] object-contain"
+												/>
+											</div>
 										) : (
 											<div className="h-14 w-14 rounded-lg bg-primary/10 flex items-center justify-center">
 												<span className="text-2xl font-bold text-primary">
@@ -89,44 +91,47 @@ export function ProjectsPageContent() {
 										)}
 									</div>
 									<CardTitle className="text-xl mt-4">{project.name}</CardTitle>
-									<CardDescription className="line-clamp-2">
+									<CardDescription className="text-base line-clamp-3">
 										{project.shortDescription}
 									</CardDescription>
 								</CardHeader>
 								<CardContent className="flex flex-1 flex-col justify-end">
 									<div className="flex flex-wrap gap-2 mb-4">
 										{project.githubUrl && (
-											<a
-												href={project.githubUrl}
-												target="_blank"
-												rel="noopener noreferrer"
-												className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-											>
-												<Github className="h-3 w-3" />
-												GitHub
-											</a>
+											<Button variant="outline" size="sm" asChild>
+												<a
+													href={project.githubUrl}
+													target="_blank"
+													rel="noopener noreferrer"
+												>
+													<Github className="h-4 w-4 mr-1" />
+													GitHub
+												</a>
+											</Button>
 										)}
 										{project.docsUrl && (
-											<a
-												href={project.docsUrl}
-												target="_blank"
-												rel="noopener noreferrer"
-												className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-											>
-												<BookOpen className="h-3 w-3" />
-												{m.projects_docs()}
-											</a>
+											<Button variant="outline" size="sm" asChild>
+												<a
+													href={project.docsUrl}
+													target="_blank"
+													rel="noopener noreferrer"
+												>
+													<BookOpen className="h-4 w-4 mr-1" />
+													{m.projects_docs()}
+												</a>
+											</Button>
 										)}
 										{project.websiteUrl && (
-											<a
-												href={project.websiteUrl}
-												target="_blank"
-												rel="noopener noreferrer"
-												className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
-											>
-												<Globe className="h-3 w-3" />
-												Website
-											</a>
+											<Button variant="outline" size="sm" asChild>
+												<a
+													href={project.websiteUrl}
+													target="_blank"
+													rel="noopener noreferrer"
+												>
+													<Globe className="h-4 w-4 mr-1" />
+													Website
+												</a>
+											</Button>
 										)}
 									</div>
 									<Button variant="outline" className="w-full" asChild>

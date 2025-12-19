@@ -112,6 +112,7 @@ function TeamMemberForm({
 			picture: member?.picture || "",
 			firstName: member?.firstName || "",
 			lastName: member?.lastName || "",
+			affiliation: member?.affiliation || "",
 			isCouncil: member?.isCouncil || false,
 			councilTitle: member?.councilTitle || "",
 			councilTitleDe: member?.councilTitleDe || "",
@@ -257,6 +258,26 @@ function TeamMemberForm({
 									)}
 								</form.Field>
 							</div>
+
+							{/* Affiliation */}
+							<form.Field name="affiliation">
+								{(field) => (
+									<div className="space-y-2">
+										<Label htmlFor={field.name}>Affiliation (optional)</Label>
+										<Input
+											id={field.name}
+											value={field.state.value}
+											onBlur={field.handleBlur}
+											onChange={(e) => field.handleChange(e.target.value)}
+											disabled={isSubmitting}
+											placeholder="e.g. Electrolux, Google, University of Munich"
+										/>
+										<p className="text-xs text-muted-foreground">
+											Company or organization this person is affiliated with
+										</p>
+									</div>
+								)}
+							</form.Field>
 						</CardContent>
 					</Card>
 

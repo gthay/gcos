@@ -7,6 +7,7 @@ export const teamMemberCreateSchema = z.object({
 	picture: z.string().min(1, "Profile picture is required"),
 	firstName: z.string().min(1, "First name is required"),
 	lastName: z.string().optional().or(z.literal("")),
+	affiliation: z.string().optional().or(z.literal("")), // Company/Organization affiliation
 
 	// Council
 	isCouncil: z.boolean().optional(),
@@ -68,6 +69,7 @@ export async function getTeamMemberSchema() {
 		picture: z.string().min(1, "Profile picture is required"),
 		firstName: z.string().min(1, "First name is required"),
 		lastName: z.string().optional().or(z.literal("")),
+		affiliation: z.string().optional().or(z.literal("")),
 
 		// Council
 		isCouncil: z.boolean().optional(),
@@ -116,6 +118,7 @@ export type TeamMember = {
 	picture: string;
 	firstName: string;
 	lastName?: string;
+	affiliation?: string;
 
 	// Council
 	isCouncil?: boolean;

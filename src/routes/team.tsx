@@ -46,32 +46,39 @@ function TeamMemberCard({
 
 	return (
 		<Card className="overflow-hidden">
-			<CardContent className="p-6">
+			<CardContent className="p-4">
 				<div className="flex flex-col items-center text-center">
-					{/* Profile Picture */}
+					{/* Profile Picture - kompakter */}
 					{member.picture ? (
 						<img
 							src={getMediaUrl(member.picture)}
 							alt={fullName}
-							className="h-24 w-24 rounded-full object-cover mb-4"
+							className="h-20 w-20 rounded-full object-cover mb-3"
 						/>
 					) : (
-						<div className="h-24 w-24 rounded-full bg-muted flex items-center justify-center mb-4">
-							<Users className="h-12 w-12 text-muted-foreground" />
+						<div className="h-20 w-20 rounded-full bg-muted flex items-center justify-center mb-3">
+							<Users className="h-10 w-10 text-muted-foreground" />
 						</div>
 					)}
 
 					{/* Name */}
 					<h3 className="text-lg font-semibold">{fullName}</h3>
 
+					{/* Affiliation (optional) */}
+					{member.affiliation && (
+						<p className="text-xs text-muted-foreground">
+							{member.affiliation}
+						</p>
+					)}
+
 					{/* Role Title */}
 					{roleTitle && (
-						<p className="text-sm text-muted-foreground mt-1">{roleTitle}</p>
+						<p className="text-sm text-primary mt-1">{roleTitle}</p>
 					)}
 
 					{/* Social Links */}
 					{(member.githubUrl || member.linkedinUrl || member.websiteUrl) && (
-						<div className="flex gap-3 mt-4">
+						<div className="flex gap-3 mt-3">
 							{member.githubUrl && (
 								<a
 									href={member.githubUrl}
@@ -137,7 +144,7 @@ function TeamPage() {
 				<div className="container py-16">
 					<div className="animate-pulse space-y-4">
 						<div className="h-8 w-48 bg-muted rounded" />
-						<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+						<div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
 							{[1, 2, 3, 4].map((i) => (
 								<div key={i} className="h-64 bg-muted rounded-lg" />
 							))}
@@ -191,7 +198,7 @@ function TeamPage() {
 								{m.team_council_description()}
 							</p>
 						</div>
-						<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+						<div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
 							{councilMembers.map((member) => (
 								<TeamMemberCard
 									key={member._id}
@@ -217,7 +224,7 @@ function TeamPage() {
 								{m.team_consultants_description()}
 							</p>
 						</div>
-						<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+						<div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
 							{consultants.map((member) => (
 								<TeamMemberCard
 									key={member._id}
@@ -243,7 +250,7 @@ function TeamPage() {
 								{m.team_instructors_description()}
 							</p>
 						</div>
-						<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+						<div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
 							{courseInstructors.map((member) => (
 								<TeamMemberCard
 									key={member._id}
@@ -279,7 +286,7 @@ function TeamPage() {
 									{m.team_project_contributors()}
 								</p>
 							</div>
-							<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+							<div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
 								{projectMembers.map((member) => (
 									<TeamMemberCard
 										key={`${projectSlug}-${member._id}`}
